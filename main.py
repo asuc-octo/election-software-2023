@@ -5,7 +5,7 @@ import os
 import dash_bootstrap_components as dbc
 from app import app
 
-import ballot_result as layout_file
+import src.frontend.ballot_result as layout_file
 
 pio.templates.default = "seaborn"
 

@@ -1,0 +1,496 @@
+ROUND 1
+Candidate                                                                      Votes  Status
+---------------------------------------------------------------------------  -------  --------
+Chaka Tellem | ElevateCal | Current ASUC President | ♥                          5547  Hopeful
+Catherine Bauer | Student Action | Tenacious ideas, tangible solutions. | ♥     2953  Hopeful
+No Response - 19                                                                 291  Hopeful
+No Response - 15                                                                 287  Hopeful
+No Response - 0                                                                  282  Hopeful
+No Response - 20                                                                 281  Hopeful
+No Response - 22                                                                 280  Hopeful
+No Response - 10                                                                 278  Hopeful
+No Response - 3                                                                  277  Hopeful
+No Response - 1                                                                  276  Hopeful
+No Response - 11                                                                 273  Hopeful
+No Response - 23                                                                 272  Hopeful
+No Response - 18                                                                 272  Hopeful
+No Response - 4                                                                  271  Hopeful
+No Response - 12                                                                 270  Hopeful
+No Response - 24                                                                 269  Hopeful
+No Response - 17                                                                 267  Hopeful
+No Response - 13                                                                 266  Hopeful
+No Response - 7                                                                  264  Hopeful
+No Response - 5                                                                  264  Hopeful
+No Response - 14                                                                 263  Hopeful
+No Response - 9                                                                  262  Hopeful
+No Response - 2                                                                  262  Hopeful
+No Response - 21                                                                 261  Hopeful
+No Response - 16                                                                 258  Hopeful
+No Response - 6                                                                  250  Hopeful
+No Response - 8                                                                  242  Rejected
+
+ROUND 2
+Candidate                                                                      Votes  Status
+---------------------------------------------------------------------------  -------  --------
+Chaka Tellem | ElevateCal | Current ASUC President | ♥                          5637  Hopeful
+Catherine Bauer | Student Action | Tenacious ideas, tangible solutions. | ♥     3105  Hopeful
+No Response - 19                                                                 291  Hopeful
+No Response - 15                                                                 287  Hopeful
+No Response - 0                                                                  282  Hopeful
+No Response - 20                                                                 281  Hopeful
+No Response - 22                                                                 280  Hopeful
+No Response - 10                                                                 278  Hopeful
+No Response - 3                                                                  277  Hopeful
+No Response - 1                                                                  276  Hopeful
+No Response - 11                                                                 273  Hopeful
+No Response - 23                                                                 272  Hopeful
+No Response - 18                                                                 272  Hopeful
+No Response - 4                                                                  271  Hopeful
+No Response - 12                                                                 270  Hopeful
+No Response - 24                                                                 269  Hopeful
+No Response - 17                                                                 267  Hopeful
+No Response - 13                                                                 266  Hopeful
+No Response - 7                                                                  264  Hopeful
+No Response - 5                                                                  264  Hopeful
+No Response - 14                                                                 263  Hopeful
+No Response - 9                                                                  262  Hopeful
+No Response - 2                                                                  262  Hopeful
+No Response - 21                                                                 261  Hopeful
+No Response - 16                                                                 258  Hopeful
+No Response - 6                                                                  250  Rejected
+No Response - 8                                                                    0  Rejected
+
+ROUND 3
+Candidate                                                                      Votes  Status
+---------------------------------------------------------------------------  -------  --------
+Chaka Tellem | ElevateCal | Current ASUC President | ♥                          5720  Hopeful
+Catherine Bauer | Student Action | Tenacious ideas, tangible solutions. | ♥     3272  Hopeful
+No Response - 19                                                                 291  Hopeful
+No Response - 15                                                                 287  Hopeful
+No Response - 0                                                                  282  Hopeful
+No Response - 20                                                                 281  Hopeful
+No Response - 22                                                                 280  Hopeful
+No Response - 10                                                                 278  Hopeful
+No Response - 3                                                                  277  Hopeful
+No Response - 1                                                                  276  Hopeful
+No Response - 11                                                                 273  Hopeful
+No Response - 23                                                                 272  Hopeful
+No Response - 18                                                                 272  Hopeful
+No Response - 4                                                                  271  Hopeful
+No Response - 12                                                                 270  Hopeful
+No Response - 24                                                                 269  Hopeful
+No Response - 17                                                                 267  Hopeful
+No Response - 13                                                                 266  Hopeful
+No Response - 7                                                                  264  Hopeful
+No Response - 5                                                                  264  Hopeful
+No Response - 14                                                                 263  Hopeful
+No Response - 9                                                                  262  Hopeful
+No Response - 2                                                                  262  Hopeful
+No Response - 21                                                                 261  Hopeful
+No Response - 16                                                                 258  Rejected
+No Response - 6                                                                    0  Rejected
+No Response - 8                                                                    0  Rejected
+
+ROUND 4
+Candidate                                                                      Votes  Status
+---------------------------------------------------------------------------  -------  --------
+Chaka Tellem | ElevateCal | Current ASUC President | ♥                          5806  Hopeful
+Catherine Bauer | Student Action | Tenacious ideas, tangible solutions. | ♥     3444  Hopeful
+No Response - 19                                                                 291  Hopeful
+No Response - 15                                                                 287  Hopeful
+No Response - 0                                                                  282  Hopeful
+No Response - 20                                                                 281  Hopeful
+No Response - 22                                                                 280  Hopeful
+No Response - 10                                                                 278  Hopeful
+No Response - 3                                                                  277  Hopeful
+No Response - 1                                                                  276  Hopeful
+No Response - 11                                                                 273  Hopeful
+No Response - 23                                                                 272  Hopeful
+No Response - 18                                                                 272  Hopeful
+No Response - 4                                                                  271  Hopeful
+No Response - 12                                                                 270  Hopeful
+No Response - 24                                                                 269  Hopeful
+No Response - 17                                                                 267  Hopeful
+No Response - 13                                                                 266  Hopeful
+No Response - 7                                                                  264  Hopeful
+No Response - 5                                                                  264  Hopeful
+No Response - 14                                                                 263  Hopeful
+No Response - 9                                                                  262  Hopeful
+No Response - 2                                                                  262  Hopeful
+No Response - 21                                                                 261  Rejected
+No Response - 16                                                                   0  Rejected
+No Response - 6                                                                    0  Rejected
+No Response - 8                                                                    0  Rejected
+
+ROUND 5
+Candidate                                                                      Votes  Status
+---------------------------------------------------------------------------  -------  --------
+Chaka Tellem | ElevateCal | Current ASUC President | ♥                          5894  Hopeful
+Catherine Bauer | Student Action | Tenacious ideas, tangible solutions. | ♥     3617  Hopeful
+No Response - 19                                                                 291  Hopeful
+No Response - 15                                                                 287  Hopeful
+No Response - 0                                                                  282  Hopeful
+No Response - 20                                                                 281  Hopeful
+No Response - 22                                                                 280  Hopeful
+No Response - 10                                                                 278  Hopeful
+No Response - 3                                                                  277  Hopeful
+No Response - 1                                                                  276  Hopeful
+No Response - 11                                                                 273  Hopeful
+No Response - 23                                                                 272  Hopeful
+No Response - 18                                                                 272  Hopeful
+No Response - 4                                                                  271  Hopeful
+No Response - 12                                                                 270  Hopeful
+No Response - 24                                                                 269  Hopeful
+No Response - 17                                                                 267  Hopeful
+No Response - 13                                                                 266  Hopeful
+No Response - 7                                                                  264  Hopeful
+No Response - 5                                                                  264  Hopeful
+No Response - 14                                                                 263  Hopeful
+No Response - 9                                                                  262  Hopeful
+No Response - 2                                                                  262  Rejected
+No Response - 21                                                                   0  Rejected
+No Response - 16                                                                   0  Rejected
+No Response - 6                                                                    0  Rejected
+No Response - 8                                                                    0  Rejected
+
+ROUND 6
+Candidate                                                                      Votes  Status
+---------------------------------------------------------------------------  -------  --------
+Chaka Tellem | ElevateCal | Current ASUC President | ♥                          5992  Hopeful
+Catherine Bauer | Student Action | Tenacious ideas, tangible solutions. | ♥     3781  Hopeful
+No Response - 19                                                                 291  Hopeful
+No Response - 15                                                                 287  Hopeful
+No Response - 0                                                                  282  Hopeful
+No Response - 20                                                                 281  Hopeful
+No Response - 22                                                                 280  Hopeful
+No Response - 10                                                                 278  Hopeful
+No Response - 3                                                                  277  Hopeful
+No Response - 1                                                                  276  Hopeful
+No Response - 11                                                                 273  Hopeful
+No Response - 23                                                                 272  Hopeful
+No Response - 18                                                                 272  Hopeful
+No Response - 4                                                                  271  Hopeful
+No Response - 12                                                                 270  Hopeful
+No Response - 24                                                                 269  Hopeful
+No Response - 17                                                                 267  Hopeful
+No Response - 13                                                                 266  Hopeful
+No Response - 7                                                                  264  Hopeful
+No Response - 5                                                                  264  Hopeful
+No Response - 14                                                                 263  Hopeful
+No Response - 9                                                                  262  Rejected
+No Response - 2                                                                    0  Rejected
+No Response - 21                                                                   0  Rejected
+No Response - 16                                                                   0  Rejected
+No Response - 6                                                                    0  Rejected
+No Response - 8                                                                    0  Rejected
+
+ROUND 7
+Candidate                                                                      Votes  Status
+---------------------------------------------------------------------------  -------  --------
+Chaka Tellem | ElevateCal | Current ASUC President | ♥                          6099  Hopeful
+Catherine Bauer | Student Action | Tenacious ideas, tangible solutions. | ♥     3936  Hopeful
+No Response - 19                                                                 291  Hopeful
+No Response - 15                                                                 287  Hopeful
+No Response - 0                                                                  282  Hopeful
+No Response - 20                                                                 281  Hopeful
+No Response - 22                                                                 280  Hopeful
+No Response - 10                                                                 278  Hopeful
+No Response - 3                                                                  277  Hopeful
+No Response - 1                                                                  276  Hopeful
+No Response - 11                                                                 273  Hopeful
+No Response - 23                                                                 272  Hopeful
+No Response - 18                                                                 272  Hopeful
+No Response - 4                                                                  271  Hopeful
+No Response - 12                                                                 270  Hopeful
+No Response - 24                                                                 269  Hopeful
+No Response - 17                                                                 267  Hopeful
+No Response - 13                                                                 266  Hopeful
+No Response - 7                                                                  264  Hopeful
+No Response - 5                                                                  264  Hopeful
+No Response - 14                                                                 263  Rejected
+No Response - 9                                                                    0  Rejected
+No Response - 2                                                                    0  Rejected
+No Response - 21                                                                   0  Rejected
+No Response - 16                                                                   0  Rejected
+No Response - 6                                                                    0  Rejected
+No Response - 8                                                                    0  Rejected
+
+ROUND 8
+Candidate                                                                      Votes  Status
+---------------------------------------------------------------------------  -------  --------
+Chaka Tellem | ElevateCal | Current ASUC President | ♥                          6189  Hopeful
+Catherine Bauer | Student Action | Tenacious ideas, tangible solutions. | ♥     4109  Hopeful
+No Response - 19                                                                 291  Hopeful
+No Response - 15                                                                 287  Hopeful
+No Response - 0                                                                  282  Hopeful
+No Response - 20                                                                 281  Hopeful
+No Response - 22                                                                 280  Hopeful
+No Response - 10                                                                 278  Hopeful
+No Response - 3                                                                  277  Hopeful
+No Response - 1                                                                  276  Hopeful
+No Response - 11                                                                 273  Hopeful
+No Response - 23                                                                 272  Hopeful
+No Response - 18                                                                 272  Hopeful
+No Response - 4                                                                  271  Hopeful
+No Response - 12                                                                 270  Hopeful
+No Response - 24                                                                 269  Hopeful
+No Response - 17                                                                 267  Hopeful
+No Response - 13                                                                 266  Hopeful
+No Response - 7                                                                  264  Hopeful
+No Response - 5                                                                  264  Rejected
+No Response - 14                                                                   0  Rejected
+No Response - 9                                                                    0  Rejected
+No Response - 2                                                                    0  Rejected
+No Response - 21                                                                   0  Rejected
+No Response - 16                                                                   0  Rejected
+No Response - 6                                                                    0  Rejected
+No Response - 8                                                                    0  Rejected
+
+ROUND 9
+Candidate                                                                      Votes  Status
+---------------------------------------------------------------------------  -------  --------
+Chaka Tellem | ElevateCal | Current ASUC President | ♥                          6292  Hopeful
+Catherine Bauer | Student Action | Tenacious ideas, tangible solutions. | ♥     4270  Hopeful
+No Response - 19                                                                 291  Hopeful
+No Response - 15                                                                 287  Hopeful
+No Response - 0                                                                  282  Hopeful
+No Response - 20                                                                 281  Hopeful
+No Response - 22                                                                 280  Hopeful
+No Response - 10                                                                 278  Hopeful
+No Response - 3                                                                  277  Hopeful
+No Response - 1                                                                  276  Hopeful
+No Response - 11                                                                 273  Hopeful
+No Response - 23                                                                 272  Hopeful
+No Response - 18                                                                 272  Hopeful
+No Response - 4                                                                  271  Hopeful
+No Response - 12                                                                 270  Hopeful
+No Response - 24                                                                 269  Hopeful
+No Response - 17                                                                 267  Hopeful
+No Response - 13                                                                 266  Hopeful
+No Response - 7                                                                  264  Rejected
+No Response - 5                                                                    0  Rejected
+No Response - 14                                                                   0  Rejected
+No Response - 9                                                                    0  Rejected
+No Response - 2                                                                    0  Rejected
+No Response - 21                                                                   0  Rejected
+No Response - 16                                                                   0  Rejected
+No Response - 6                                                                    0  Rejected
+No Response - 8                                                                    0  Rejected
+
+ROUND 10
+Candidate                                                                      Votes  Status
+---------------------------------------------------------------------------  -------  --------
+Chaka Tellem | ElevateCal | Current ASUC President | ♥                          6397  Hopeful
+Catherine Bauer | Student Action | Tenacious ideas, tangible solutions. | ♥     4429  Hopeful
+No Response - 15                                                                 287  Hopeful
+No Response - 0                                                                  282  Hopeful
+No Response - 20                                                                 281  Hopeful
+No Response - 22                                                                 280  Hopeful
+No Response - 10                                                                 278  Hopeful
+No Response - 3                                                                  277  Hopeful
+No Response - 1                                                                  276  Hopeful
+No Response - 11                                                                 273  Hopeful
+No Response - 23                                                                 272  Hopeful
+No Response - 18                                                                 272  Hopeful
+No Response - 4                                                                  271  Hopeful
+No Response - 12                                                                 270  Hopeful
+No Response - 24                                                                 269  Hopeful
+No Response - 17                                                                 267  Hopeful
+No Response - 19                                                                 291  Rejected
+No Response - 13                                                                 266  Rejected
+No Response - 7                                                                    0  Rejected
+No Response - 5                                                                    0  Rejected
+No Response - 14                                                                   0  Rejected
+No Response - 9                                                                    0  Rejected
+No Response - 2                                                                    0  Rejected
+No Response - 21                                                                   0  Rejected
+No Response - 16                                                                   0  Rejected
+No Response - 6                                                                    0  Rejected
+No Response - 8                                                                    0  Rejected
+
+ROUND 11
+Candidate                                                                      Votes  Status
+---------------------------------------------------------------------------  -------  --------
+Chaka Tellem | ElevateCal | Current ASUC President | ♥                          6596  Hopeful
+Catherine Bauer | Student Action | Tenacious ideas, tangible solutions. | ♥     4787  Hopeful
+No Response - 0                                                                  282  Hopeful
+No Response - 20                                                                 281  Hopeful
+No Response - 22                                                                 280  Hopeful
+No Response - 10                                                                 278  Hopeful
+No Response - 3                                                                  277  Hopeful
+No Response - 1                                                                  276  Hopeful
+No Response - 11                                                                 273  Hopeful
+No Response - 23                                                                 272  Hopeful
+No Response - 18                                                                 272  Hopeful
+No Response - 4                                                                  271  Hopeful
+No Response - 12                                                                 270  Hopeful
+No Response - 24                                                                 269  Hopeful
+No Response - 15                                                                 287  Rejected
+No Response - 17                                                                 267  Rejected
+No Response - 19                                                                   0  Rejected
+No Response - 13                                                                   0  Rejected
+No Response - 7                                                                    0  Rejected
+No Response - 5                                                                    0  Rejected
+No Response - 14                                                                   0  Rejected
+No Response - 9                                                                    0  Rejected
+No Response - 2                                                                    0  Rejected
+No Response - 21                                                                   0  Rejected
+No Response - 16                                                                   0  Rejected
+No Response - 6                                                                    0  Rejected
+No Response - 8                                                                    0  Rejected
+
+ROUND 12
+Candidate                                                                      Votes  Status
+---------------------------------------------------------------------------  -------  --------
+Chaka Tellem | ElevateCal | Current ASUC President | ♥                          6811  Hopeful
+Catherine Bauer | Student Action | Tenacious ideas, tangible solutions. | ♥     5126  Hopeful
+No Response - 20                                                                 281  Hopeful
+No Response - 22                                                                 280  Hopeful
+No Response - 10                                                                 278  Hopeful
+No Response - 3                                                                  277  Hopeful
+No Response - 1                                                                  276  Hopeful
+No Response - 11                                                                 273  Hopeful
+No Response - 23                                                                 272  Hopeful
+No Response - 18                                                                 272  Hopeful
+No Response - 4                                                                  271  Hopeful
+No Response - 12                                                                 270  Hopeful
+No Response - 0                                                                  282  Rejected
+No Response - 24                                                                 269  Rejected
+No Response - 15                                                                   0  Rejected
+No Response - 17                                                                   0  Rejected
+No Response - 19                                                                   0  Rejected
+No Response - 13                                                                   0  Rejected
+No Response - 7                                                                    0  Rejected
+No Response - 5                                                                    0  Rejected
+No Response - 14                                                                   0  Rejected
+No Response - 9                                                                    0  Rejected
+No Response - 2                                                                    0  Rejected
+No Response - 21                                                                   0  Rejected
+No Response - 16                                                                   0  Rejected
+No Response - 6                                                                    0  Rejected
+No Response - 8                                                                    0  Rejected
+
+ROUND 13
+Candidate                                                                      Votes  Status
+---------------------------------------------------------------------------  -------  --------
+Chaka Tellem | ElevateCal | Current ASUC President | ♥                          7023  Hopeful
+Catherine Bauer | Student Action | Tenacious ideas, tangible solutions. | ♥     5465  Hopeful
+No Response - 22                                                                 280  Hopeful
+No Response - 10                                                                 278  Hopeful
+No Response - 3                                                                  277  Hopeful
+No Response - 1                                                                  276  Hopeful
+No Response - 11                                                                 273  Hopeful
+No Response - 23                                                                 272  Hopeful
+No Response - 18                                                                 272  Hopeful
+No Response - 4                                                                  271  Hopeful
+No Response - 20                                                                 281  Rejected
+No Response - 12                                                                 270  Rejected
+No Response - 0                                                                    0  Rejected
+No Response - 24                                                                   0  Rejected
+No Response - 15                                                                   0  Rejected
+No Response - 17                                                                   0  Rejected
+No Response - 19                                                                   0  Rejected
+No Response - 13                                                                   0  Rejected
+No Response - 7                                                                    0  Rejected
+No Response - 5                                                                    0  Rejected
+No Response - 14                                                                   0  Rejected
+No Response - 9                                                                    0  Rejected
+No Response - 2                                                                    0  Rejected
+No Response - 21                                                                   0  Rejected
+No Response - 16                                                                   0  Rejected
+No Response - 6                                                                    0  Rejected
+No Response - 8                                                                    0  Rejected
+
+ROUND 14
+Candidate                                                                      Votes  Status
+---------------------------------------------------------------------------  -------  --------
+Chaka Tellem | ElevateCal | Current ASUC President | ♥                          7230  Hopeful
+Catherine Bauer | Student Action | Tenacious ideas, tangible solutions. | ♥     5809  Hopeful
+No Response - 10                                                                 278  Hopeful
+No Response - 3                                                                  277  Hopeful
+No Response - 1                                                                  276  Hopeful
+No Response - 11                                                                 273  Hopeful
+No Response - 23                                                                 272  Hopeful
+No Response - 18                                                                 272  Hopeful
+No Response - 22                                                                 280  Rejected
+No Response - 4                                                                  271  Rejected
+No Response - 20                                                                   0  Rejected
+No Response - 12                                                                   0  Rejected
+No Response - 0                                                                    0  Rejected
+No Response - 24                                                                   0  Rejected
+No Response - 15                                                                   0  Rejected
+No Response - 17                                                                   0  Rejected
+No Response - 19                                                                   0  Rejected
+No Response - 13                                                                   0  Rejected
+No Response - 7                                                                    0  Rejected
+No Response - 5                                                                    0  Rejected
+No Response - 14                                                                   0  Rejected
+No Response - 9                                                                    0  Rejected
+No Response - 2                                                                    0  Rejected
+No Response - 21                                                                   0  Rejected
+No Response - 16                                                                   0  Rejected
+No Response - 6                                                                    0  Rejected
+No Response - 8                                                                    0  Rejected
+
+ROUND 15
+Candidate                                                                      Votes  Status
+---------------------------------------------------------------------------  -------  --------
+Chaka Tellem | ElevateCal | Current ASUC President | ♥                          7424  Hopeful
+Catherine Bauer | Student Action | Tenacious ideas, tangible solutions. | ♥     6166  Hopeful
+No Response - 3                                                                  277  Hopeful
+No Response - 1                                                                  276  Hopeful
+No Response - 11                                                                 273  Hopeful
+No Response - 23                                                                 272  Hopeful
+No Response - 10                                                                 278  Rejected
+No Response - 18                                                                 272  Rejected
+No Response - 22                                                                   0  Rejected
+No Response - 4                                                                    0  Rejected
+No Response - 20                                                                   0  Rejected
+No Response - 12                                                                   0  Rejected
+No Response - 0                                                                    0  Rejected
+No Response - 24                                                                   0  Rejected
+No Response - 15                                                                   0  Rejected
+No Response - 17                                                                   0  Rejected
+No Response - 19                                                                   0  Rejected
+No Response - 13                                                                   0  Rejected
+No Response - 7                                                                    0  Rejected
+No Response - 5                                                                    0  Rejected
+No Response - 14                                                                   0  Rejected
+No Response - 9                                                                    0  Rejected
+No Response - 2                                                                    0  Rejected
+No Response - 21                                                                   0  Rejected
+No Response - 16                                                                   0  Rejected
+No Response - 6                                                                    0  Rejected
+No Response - 8                                                                    0  Rejected
+
+FINAL RESULT
+Candidate                                                                      Votes  Status
+---------------------------------------------------------------------------  -------  --------
+Chaka Tellem | ElevateCal | Current ASUC President | ♥                          7627  Elected
+No Response - 1                                                                  276  Rejected
+No Response - 11                                                                 273  Rejected
+Catherine Bauer | Student Action | Tenacious ideas, tangible solutions. | ♥     6513  Rejected
+No Response - 3                                                                  277  Rejected
+No Response - 23                                                                 272  Rejected
+No Response - 10                                                                   0  Rejected
+No Response - 18                                                                   0  Rejected
+No Response - 22                                                                   0  Rejected
+No Response - 4                                                                    0  Rejected
+No Response - 20                                                                   0  Rejected
+No Response - 12                                                                   0  Rejected
+No Response - 0                                                                    0  Rejected
+No Response - 24                                                                   0  Rejected
+No Response - 15                                                                   0  Rejected
+No Response - 17                                                                   0  Rejected
+No Response - 19                                                                   0  Rejected
+No Response - 13                                                                   0  Rejected
+No Response - 7                                                                    0  Rejected
+No Response - 5                                                                    0  Rejected
+No Response - 14                                                                   0  Rejected
+No Response - 9                                                                    0  Rejected
+No Response - 2                                                                    0  Rejected
+No Response - 21                                                                   0  Rejected
+No Response - 16                                                                   0  Rejected
+No Response - 6                                                                    0  Rejected
+No Response - 8                                                                    0  Rejected
+

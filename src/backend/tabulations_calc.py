@@ -1,0 +1,317 @@
+import pandas as pd
+import re
+import numpy as np
+import math
+from itertools import dropwhile
+from collections import OrderedDict
+
+import pyrankvote
+from pyrankvote import Candidate, Ballot
+
+def fix_non_break_space(df):
+    raw_df_trial = df.replace('\xa0', ' ', regex=True)
+    return raw_df_trial.replace(r"^ +| +$", r"", regex=True)
+
+
+def fix_col_names(df_csv):
+    df = df_csv.dropna(how = 'all').reset_index(drop = True)
+    return df.add_suffix('.0')
+
+
+# Position:
+# position = 'President'
+def get_positional_data(position, raw_df_csv):
+    # Fix Column names to avoid cols with ranks >= 10 getting deleted in the data cleanup
+    ## col structure: 
+    ## 'Senate - 10 - 10.0' where 10.0 is the indicator number for rank 10 (not 1 or anything else)
+    raw_df = fix_non_break_space(raw_df_csv)
+    raw_df = fix_col_names(raw_df)
+    END_SUFFIX = '.0'
+    SEPARATOR = ' - '
+    pos_lst = ['President', 'Executive Vice President', 
+                'External Affairs Vice President', 'Academic Affairs Vice President',
+               'Student Advocate', 'Transfer Representative', 'Senate']
+    # add suffix for columns about positions only
+    raw_df.columns = [col + SEPARATOR + (re.findall(r'\d+', col)[0]) + END_SUFFIX if col.startswith(tuple(pos_lst)) else col for col in raw_df.columns] # raw_df.add_suffix('.0')
+
+
+    position_str = position + SEPARATOR
+    president_cols = [col for col in raw_df if col.startswith(position)]
+    pres_counts = 0
+
+    while len(president_cols) != 0:
+        pres_counts += 1
+        pres_one_col = [col for col in raw_df if col.endswith(SEPARATOR + str(pres_counts) + END_SUFFIX)] # raw_df.filter(like = position_str + str(pres_counts) + '.') # 
+
+        president_cols = [x for x in president_cols if x not in pres_one_col]
+
+    pres_counts # Total number of pres selection options: President - 'pres_counts' is the last column name
+
+    rslt_df = pd.DataFrame()
+    pres_candidate_names = []
+    for i in range(pres_counts):
+        # i + 1 -> ranking in that position
+        rank = str(i + 1)
+        col_name = position_str + rank # + SEPARATOR + rank + END_SUFFIX
+        end_name = str(i + 1) + END_SUFFIX
+        
+        # take account of duplicate columns for the same position & ranking
+        pres_num_col = [col for col in raw_df if (col.startswith(position_str) & col.endswith(end_name))]
+        pres_num_raw = raw_df[pres_num_col]
+        
+        # compress the rows to avoid repeating cols
+        pres_final_num_df = pd.DataFrame(pres_num_raw.bfill(axis=1).iloc[:, 0])
+        # there should only be one column df
+        pres_final_num_df.columns = [col_name]
+        
+        # unique candidates in this column -> appended to all pres candidate lists
+        unique_cand_subset = list(pres_final_num_df[col_name].unique())
+        pres_candidate_names = pres_candidate_names + list(set(unique_cand_subset) - set(pres_candidate_names))
+
+        # concat to the resulting df
+        if rslt_df.empty:
+            rslt_df = pres_final_num_df
+        else:
+            rslt_df = pd.concat([rslt_df, pres_final_num_df], axis=1).reset_index(drop=True)
+    return rslt_df.dropna(axis = 0, how = 'all').reset_index(drop=True)
+
+
+# PRESIDENTIAL CAMPAIGN
+def exec_calculations(df):
+#     works for president but not for other exec positions yet
+    trial_elect_df = df
+    df_cols = list(trial_elect_df.columns)
+    len_df = len(trial_elect_df) * len(df_cols)
+    MAX_RECURSION = 25
+    no_rslt_str = "No Response"
+    for c in range(len(df_cols)):
+        col_name = df_cols[c]
+        # trial_elect_df[col_name] = [no_rslt_lst[i] if type(v)==type(np.nan) else v for i,v in enumerate(trial_elect_df[col_name].tolist())]
+        trial_elect_df[col_name] = [no_rslt_str if type(v)==type(np.nan) else v for i,v in enumerate(trial_elect_df[col_name].tolist())]
+
+    raw_cand_str_df = trial_elect_df # copying surface level
+    raw_cand_str_df
+
+    ## Assign Candidates
+    unique_cands = pd.unique(trial_elect_df[list(trial_elect_df.columns)].values.ravel('K'))
+    FIRST_CHAR = 6
+    candidates = []
+    cand_dict = {}
+    unique_cands
+    for cand in unique_cands:
+        if (not pd.isnull(cand)) or (cand != ''):
+            var_name_raw = "".join([s[0] for s in cand.split()][:FIRST_CHAR])
+            var_name = re.sub('[^a-zA-Z]+', '', var_name_raw)
+            vars()[var_name] = Candidate(cand)
+            candidates.append(vars()[var_name])
+            cand_dict[cand] = vars()[var_name]
+
+    # Replace str name to Candidate value
+    for col in raw_cand_str_df.columns:
+        raw_cand_str_df[col] = raw_cand_str_df[col].map(cand_dict)
+
+    # Add the results to Ballot
+    ballots = []
+    
+
+    raw_cand_str_df = raw_cand_str_df.loc[raw_cand_str_df.nunique(axis=1).ne(1)].reset_index(drop = True)
+    for i in range(len(raw_cand_str_df)):
+        lst = raw_cand_str_df.loc[i, :].values.flatten().tolist()
+        # Avoid any trailing NaN values
+        res = list(reversed(tuple(dropwhile(lambda x: x is candidates[2],
+                                        reversed(lst)))))
+        rslt = Ballot(ranked_candidates = res)
+        ballots.append(rslt)
+
+    # Return result
+    election_result = pyrankvote.instant_runoff_voting(candidates, ballots)
+    winners = election_result.get_winners()
+
+    return election_result
+
+def get_final_rslt(election_result):
+    all_rounds = election_result.__dict__["rounds"]
+    return all_rounds[len(all_rounds) - 1].__str__()
+
+
+def senate_calculations(raw_df):
+    df = get_positional_data("Senate", raw_df)
+    trial_elect_df = df
+    df_cols = list(trial_elect_df.columns)
+    len_df = len(trial_elect_df) * len(df_cols)
+    MAX_RECURSION = 25
+    # no_rslt_lst = ["No Response - " + str(i) for i in range(MAX_RECURSION)] * ((len_df // MAX_RECURSION) + 1)
+    no_rslt_str = "No Response"
+    for c in range(len(df_cols)):
+        col_name = df_cols[c]
+        # trial_elect_df[col_name] = [no_rslt_lst[i] if type(v)==type(np.nan) else v for i,v in enumerate(trial_elect_df[col_name].tolist())]
+        trial_elect_df[col_name] = [no_rslt_str if type(v)==type(np.nan) else v for i,v in enumerate(trial_elect_df[col_name].tolist())]
+
+    raw_cand_str_df = trial_elect_df # copying surface level
+    raw_cand_str_df
+
+    ## Assign Candidates
+    unique_cands = pd.unique(trial_elect_df[list(trial_elect_df.columns)].values.ravel('K'))
+    FIRST_CHAR = 6
+    candidates = []
+    cand_dict = {}
+    unique_cands
+    for cand in unique_cands:
+        if (not pd.isnull(cand)) or (cand != ''):
+            var_name_raw = "".join([s[0] for s in cand.split()][:FIRST_CHAR])
+            var_name = re.sub('[^a-zA-Z]+', '', var_name_raw)
+            vars()[var_name] = Candidate(cand)
+            candidates.append(vars()[var_name])
+            cand_dict[cand] = vars()[var_name]
+    # Replace str name to Candidate value
+    for col in raw_cand_str_df.columns:
+        raw_cand_str_df[col] = raw_cand_str_df[col].map(cand_dict)
+
+    # Add the results to Ballot
+    ballots = []
+
+
+    raw_cand_str_df = raw_cand_str_df.loc[raw_cand_str_df.nunique(axis=1).ne(1)].reset_index(drop = True)
+    for i in range(len(raw_cand_str_df)):
+        lst = raw_cand_str_df.loc[i, :].values.flatten().tolist()
+
+        target_element = Candidate("No Response")
+
+        # delete trailing 'No Response' values
+        def takewhile_including(iterable, value):
+            for it in iterable:
+                yield it
+                if it == value:
+                    return
+        with_dup = list(takewhile_including(lst, target_element))[:-1]
+
+        res = list(OrderedDict.fromkeys(with_dup))
+
+        rslt = Ballot(ranked_candidates = res)
+        ballots.append(rslt)
+
+    # # Return result
+    # election_result = pyrankvote.instant_runoff_voting(candidates, ballots)
+    NUMBER_OF_SEATS = 20
+    election_result = pyrankvote.single_transferable_vote(
+        candidates, ballots, number_of_seats=20
+    )
+    winners = election_result.get_winners()
+    return election_result
+
+
+def get_propositional_data(proposition, raw_df_csv):
+    # Fix Column names to avoid cols with ranks >= 10 getting deleted in the data cleanup
+    raw_df = fix_col_names(raw_df_csv)
+
+    position_str = proposition
+    president_cols = [col for col in raw_df if col.startswith(proposition)]
+
+    pres_counts = len(president_cols) # Total number of pres selection options: President - 'pres_counts' is the last column name
+
+    rslt_df = pd.DataFrame()
+    pres_candidate_names = []
+    for i in range(pres_counts):
+        # i + 1 -> ranking in that position
+        rank = str(i + 1)
+        col_name = position_str + rank # + SEPARATOR + rank + END_SUFFIX
+        
+        # take account of duplicate columns for the same position & ranking
+        pres_num_col = [col for col in raw_df if (col.startswith(position_str))]
+        pres_num_raw = raw_df[pres_num_col]
+        
+        # compress the rows to avoid repeating cols
+        pres_final_num_df = pd.DataFrame(pres_num_raw.bfill(axis=1).iloc[:, 0])
+        # there should only be one column df
+        pres_final_num_df.columns = [col_name]
+        
+        # unique candidates in this column -> appended to all pres candidate lists
+        unique_cand_subset = list(pres_final_num_df[col_name].unique())
+        pres_candidate_names = pres_candidate_names + list(set(unique_cand_subset) - set(pres_candidate_names))
+
+        # concat to the resulting df
+        if rslt_df.empty:
+            rslt_df = pres_final_num_df
+        else:
+            rslt_df = pd.concat([rslt_df, pres_final_num_df], axis=1).reset_index(drop=True)
+    return rslt_df.dropna(axis = 0, how = 'all').reset_index(drop=True)
+
+
+
+def proposition_calculation(proposition_name, raw_df):
+    prop_trial_df = get_propositional_data(proposition_name, raw_df)
+    prop_trial_df
+
+    proposition_cols = list(prop_trial_df.columns)
+    usage_df = pd.DataFrame()
+    if len(proposition_cols) > 1:
+        # all proposition columns have to the same
+        prop_trial_df['matching'] = prop_trial_df.eq(prop_trial_df.iloc[:, 0], axis=0).all(1)
+        matching_rows = prop_trial_df['matching'].unique()
+        if ((len(matching_rows) == 1) & (matching_rows[0] == True)):
+            print("All rows are the same")
+            usage_df = prop_trial_df[[prop_trial_df.columns[0]]]
+        else:
+            # Assuming combining of cols are needed
+            no_rslt_str = "No Response"
+            for c in range(len(proposition_cols)):
+                col_name = proposition_cols[c]
+                prop_trial_df[col_name] = [no_rslt_str if type(v)==type(np.nan) else v for i,v in enumerate(prop_trial_df[col_name].tolist())]
+    else:
+        usage_df = prop_trial_df
+    # usage_df is our main character
+    usage_col = usage_df.columns[0]
+    usage_df[usage_col] = usage_df[usage_col].str.strip()
+    rslt_df = usage_df[usage_col].value_counts().rename_axis('Votes').reset_index(name='counts')
+    
+    rslt_df = pd.DataFrame(np.insert(rslt_df.values, 0, values=[proposition_name, ''], axis=0))
+    return rslt_df.reset_index(drop = True)
+
+# pos_lst = ['President', 'Executive Vice President', 
+#                 'External Affairs Vice President', 'Academic Affairs Vice President',
+#                'Student Advocate', 'Transfer Representative', 'Senate']
+# position = "Senate"
+raw_df = pd.read_csv("/Users/saruul/Desktop/Projects/asuc_ballot/2022ElectionResults.csv")
+
+def calculate_execs(raw_df):
+    folder = 'results/'
+    pos_dict = {'President': 'president.txt', 
+               'Executive Vice President' : 'executive_vice_president.txt', 
+                'External Affairs Vice President' : 'external_affairs_vice_president.txt', 
+                'Academic Affairs Vice President' : 'academic_affairs_vice_president.txt' ,
+                'Student Advocate' : 'student_advocate.txt', 
+                'Transfer Representative' : 'transfer_representative.txt'}
+    for position, filename in pos_dict.items():
+        rslt_df = get_positional_data(position, raw_df)
+        get_final = get_final_rslt(exec_calculations(rslt_df))
+        # print(results)
+        with open((folder + filename), "w") as f:
+            print(get_final, file=f)
+        f.close()
+
+def calculate_senate(raw_df):
+    folder = 'results/'
+    position = 'Senate'
+    filename = 'senate.txt'
+    rslt_df = get_positional_data(position, raw_df)
+    get_final = get_final_rslt(senate_calculations(rslt_df))
+    # print(results)
+    with open((folder + filename), "w") as f:
+        print(get_final, file=f)
+    f.close()
+
+
+def calculate_propositions(proposition_list, raw_df):
+    result_df = pd.DataFrame()
+    for proposition_name in proposition_list:
+        if proposition_name == proposition_list[0]:
+            result_df = proposition_calculation(proposition_name, raw_df)
+        else:
+            result_df = pd.concat([result_df, proposition_calculation(proposition_name, raw_df)], axis = 0)
+    return result_df
+
+calculate_execs(raw_df)
+calculate_senate(raw_df)
+proposition_lst = ['Proposition 22A', 'Proposition 22B']
+rslt = calculate_propositions(proposition_lst, raw_df)
+print(rslt)
