@@ -1,1 +1,1 @@
-web: gunicorn --worker-class gevent --timeout 25 --keep-alive 5 --chdir src app:server
+web: gunicorn --worker-class gevent --timeout 25 --keep-alive 5 --log-level 'error' --log-level 'critical' --chdir src app:server
