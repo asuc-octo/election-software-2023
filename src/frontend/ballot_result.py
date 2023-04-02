@@ -588,7 +588,7 @@ def advocate_table(val):
     else:
         html.Div("Waiting on Student Advocate Data")
 
-
+RESULTS_PATH = 'src/results'
 
 @app.callback(
         Output("total-rslt", "children"),
@@ -602,7 +602,7 @@ def advocate_table(val, position_lst_str, proposition_list_str):
     all_result_lst = position_lst + proposition_lst
     all_html_result_lst = []
     for result_name in all_result_lst:
-        file_name = 'results/' + result_name + '.txt'
+        file_name = RESULTS_PATH + result_name + '.txt'
         if os.path.isfile(file_name):
             data = ''
             with open(file_name, 'r') as file:

@@ -17,9 +17,6 @@ app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP], meta_tags=[
 pio.templates.default = "seaborn"
 
 
-
-
-
 from dash import Dash, dcc, html, Input, Output, State, dash_table
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
@@ -41,6 +38,7 @@ from backend.tabulations_calc import calculate_all
 title = html.P("ASUC Election 2023", style=style.TITLE)
 tabs = html.Div([tabs_layout(["Results", "About", "FAQ"])])
 
+RESULTS_PATH = 'src/results/'
 
 def layout():
     return html.Div([
@@ -619,13 +617,13 @@ def advocate_table(val):
         Input('output-position-str', 'value'),
         Input('output-proposition-str', 'value')
 )
-def advocate_table(val, position_lst_str, proposition_list_str):
+def result_table(val, position_lst_str, proposition_list_str):
     position_lst = txt_str_to_list(position_lst_str)
     proposition_lst = txt_str_to_list(proposition_list_str)
     all_result_lst = position_lst + proposition_lst
     all_html_result_lst = []
     for result_name in all_result_lst:
-        file_name = 'results/' + result_name + '.txt'
+        file_name = RESULTS_PATH + result_name + '.txt'
         if os.path.isfile(file_name):
             data = ''
             with open(file_name, 'r') as file:

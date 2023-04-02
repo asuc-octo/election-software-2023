@@ -8,6 +8,8 @@ from collections import OrderedDict
 import pyrankvote
 from pyrankvote import Candidate, Ballot
 
+RESULTS_PATH = 'src/results/'
+
 def fix_non_break_space(df):
     raw_df_trial = pd.DataFrame()
     try:
@@ -344,7 +346,7 @@ def combine_two_lists_to_dict(lst1, lst2):
         Exception("Both lists need to be same length")
 
 def calculate_execs(position_lst_all, raw_df):
-    folder = 'results/'
+    folder = RESULTS_PATH
     senate_str = 'Senate'
     position_lst = position_lst_all
     position_lst.remove(senate_str)
@@ -360,7 +362,7 @@ def calculate_execs(position_lst_all, raw_df):
         f.close()
 
 def calculate_senate(raw_df):
-    folder = 'results/'
+    folder = RESULTS_PATH
     position = 'Senate'
     filename = 'senate.txt'
     rslt_df = get_positional_data(position, raw_df)
@@ -373,7 +375,7 @@ def calculate_senate(raw_df):
 
 def calculate_propositions(proposition_list, raw_df):
     result_df = pd.DataFrame()
-    folder = 'results/'
+    folder = RESULTS_PATH
     for proposition_name in proposition_list:
         filename = proposition_name + ".txt"
         result_df = proposition_calculation(proposition_name, raw_df)
