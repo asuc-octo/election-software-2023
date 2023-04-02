@@ -1,1 +1,1 @@
-web: gunicorn --chdir src app:server
+web: gunicorn --graceful-timeout 90 --chdir src app:server
