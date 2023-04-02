@@ -207,6 +207,8 @@ def upload_file(null, position_file_content, proposition_file_content):
                     html.Div(id='exec-first-group-calc'),
                     html.Div(id='exec-second-group-calc'),
                     html.Div(id='exec-third-group-calc'),
+                    html.Div(id='exec-fourth-group-calc'),
+                    html.Div(id='exec-fifth-group-calc'),
                     html.Div(id='senate-calc'),
                     html.Div(id='proposition-calc'),
                     html.Div(id='output-data-upload'),
@@ -291,11 +293,14 @@ def convert_dtype(x):
 """
 html.Div(id='exec-first-group-calc'),
 html.Div(id='exec-second-group-calc'),
+html.Div(id='exec-third-group-calc'),
+html.Div(id='exec-fourth-group-calc'),
+html.Div(id='exec-fifth-group-calc'),
 html.Div(id='senate-calc'),
 html.Div(id='proposition-calc'),
 """
 
-SPLIT_POSITION_N = 3
+SPLIT_POSITION_N = 5
 
 @app.callback(Output('exec-first-group-calc', 'value'),
               Input('upload-results-data', 'contents'),
@@ -342,6 +347,38 @@ def update_output(list_of_contents, list_of_names, list_of_dates, position_lst_s
     if list_of_contents is not None:
         position_lst = txt_str_to_list(position_lst_str)
         position_third_group = split_list_into_n(position_lst, SPLIT_POSITION_N)[2]
+        proposition_lst = txt_str_to_list(proposition_list_str)
+        parse_contents_execs(list_of_contents, list_of_names, list_of_dates, position_third_group, proposition_lst)
+        return 1
+
+@app.callback(Output('exec-fourth-group-calc', 'value'),
+              Input('upload-results-data', 'contents'),
+              State('upload-results-data', 'filename'),
+              State('upload-results-data', 'last_modified'),
+              Input('output-position-str', 'value'),
+              Input('output-proposition-str', 'value')
+)
+def update_output(list_of_contents, list_of_names, list_of_dates, position_lst_str, proposition_list_str):
+    print("Received the file")
+    if list_of_contents is not None:
+        position_lst = txt_str_to_list(position_lst_str)
+        position_third_group = split_list_into_n(position_lst, SPLIT_POSITION_N)[3]
+        proposition_lst = txt_str_to_list(proposition_list_str)
+        parse_contents_execs(list_of_contents, list_of_names, list_of_dates, position_third_group, proposition_lst)
+        return 1
+
+@app.callback(Output('exec-fifth-group-calc', 'value'),
+              Input('upload-results-data', 'contents'),
+              State('upload-results-data', 'filename'),
+              State('upload-results-data', 'last_modified'),
+              Input('output-position-str', 'value'),
+              Input('output-proposition-str', 'value')
+)
+def update_output(list_of_contents, list_of_names, list_of_dates, position_lst_str, proposition_list_str):
+    print("Received the file")
+    if list_of_contents is not None:
+        position_lst = txt_str_to_list(position_lst_str)
+        position_third_group = split_list_into_n(position_lst, SPLIT_POSITION_N)[4]
         proposition_lst = txt_str_to_list(proposition_list_str)
         parse_contents_execs(list_of_contents, list_of_names, list_of_dates, position_third_group, proposition_lst)
         return 1
