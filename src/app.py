@@ -4,7 +4,7 @@ import plotly.io as pio
 import os
 import dash_bootstrap_components as dbc
 
-import frontend.ballot_result as layout_file
+# import frontend.ballot_result as layout_file
 # from app import app
 
 # from dash import Dash, dcc, html, Input, Output
