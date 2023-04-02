@@ -1,1 +1,1 @@
-web: gunicorn --worker-class gevent --timeout 120 --chdir src app:server
+web: gunicorn --worker-class gevent --timeout 300 --chdir src app:server
