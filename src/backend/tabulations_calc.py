@@ -364,7 +364,7 @@ def calculate_execs(position_lst_all, raw_df):
 def calculate_senate(raw_df):
     folder = RESULTS_PATH
     position = 'Senate'
-    filename = 'senate.txt'
+    filename = 'Senate.txt'
     rslt_df = get_positional_data(position, raw_df)
     get_final = get_final_rslt(senate_calculations(rslt_df))
     # print(results)
