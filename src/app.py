@@ -38,7 +38,7 @@ from backend.tabulations_calc import calculate_all
 title = html.P("ASUC Election 2023", style=style.TITLE)
 tabs = html.Div([tabs_layout(["Results", "About", "FAQ"])])
 
-RESULTS_PATH = 'src/results/'
+RESULTS_PATH = "/app/src/results"
 
 def layout():
     return html.Div([
