@@ -431,9 +431,8 @@ def update_output(list_of_contents, list_of_names, list_of_dates, position_lst_s
               Input('proposition-calc', 'value'),
 )
 def update_output(list_of_contents, first, second, third, fourth, fifth, senate, proposition):
-    all_lst = [int(first), int(second), int(third), int(fourth), int(fifth), int(senate), int(proposition)]
     print("Received the file")
-    if (list_of_contents is not None) & (sum(all_lst) == len(all_lst)):
+    if (list_of_contents is not None) & (first is not None) & (second is not None) & (third is not None) & (fourth is not None) & (fifth is not None) & (senate is not None) & (proposition is not None):
         # position_lst = txt_str_to_list(position_lst_str)
         # proposition_lst = txt_str_to_list(proposition_list_str)
         # parse_contents_senate(list_of_contents, list_of_names, list_of_dates, position_lst, proposition_lst)
