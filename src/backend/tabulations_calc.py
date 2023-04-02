@@ -399,7 +399,7 @@ def calculate_all(position_lst, proposition_lst, raw_df):
     """
     # calculate_execs(position_lst, raw_df)
     calculate_senate(raw_df)
-    # calculate_propositions(proposition_lst, raw_df)
+    calculate_propositions(proposition_lst, raw_df)
 
 
 # calculate_execs(raw_df)
