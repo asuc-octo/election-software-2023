@@ -10,11 +10,11 @@ import os.path
 
 import pandas as pd
 
-import config.template_css as style
 from config.template_functions import tabs_layout
+import config.template_css as style
 from app import app
 
-from src.backend.tabulations_calc import calculate_all
+from backend.tabulations_calc import calculate_all
 
 title = html.P("ASUC Election 2023", style=style.TITLE)
 tabs = html.Div([tabs_layout(["Results", "About", "FAQ"])])
