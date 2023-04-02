@@ -4,18 +4,11 @@ import plotly.io as pio
 import os
 import dash_bootstrap_components as dbc
 
-# import frontend.ballot_result as layout_file
-# from app import app
-
-# from dash import Dash, dcc, html, Input, Output
-import dash_bootstrap_components as dbc
-
 app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP], meta_tags=[
         {"name": "viewport", "content": "width=device-width, initial-scale=1"}
     ])
 
 pio.templates.default = "seaborn"
-
 
 from dash import Dash, dcc, html, Input, Output, State, dash_table
 import dash_bootstrap_components as dbc
@@ -31,14 +24,17 @@ import pandas as pd
 
 from config.template_functions import tabs_layout
 import config.template_css as style
-# from app import app
 
-from backend.tabulations_calc import calculate_all
+from backend.tabulations_calc import calculate_senate, calculate_propositions, calculate_execs
 
 title = html.P("ASUC Election 2023", style=style.TITLE)
 tabs = html.Div([tabs_layout(["Results", "About", "FAQ"])])
 
-RESULTS_PATH = str(os.getcwd()) + "/results/" # str(os.getcwd()) + "/src/results/" # for local
+RESULTS_PATH = str(os.getcwd()) + "/src/results/" # for local #str(os.getcwd()) + "/results/" #for heroku
+
+def split_list(a_list):
+    half = len(a_list)//2
+    return a_list[:half], a_list[half:]
 
 def layout():
     return html.Div([
@@ -77,12 +73,6 @@ def layout_results():
             html.Div(id='upload-proposition-file'),
             html.Br()])
             ]),
-
-        # html.Br(), html.Br(),
-        # dbc.Row(dbc.Col(html.Div("Upload Proposition Name File"))),
-        # html.Br(),
-        # html.Div(id='upload-proposition-file'),
-        # html.Br(),
         html.Div(id='upload-results-file'),
         html.Br()
         ],
@@ -208,6 +198,10 @@ def upload_file(null, position_file_content, proposition_file_content):
                         multiple=False
                     ),
                     html.Div(id='loading'),
+                    html.Div(id='exec-first-half-calc'),
+                    html.Div(id='exec-second-half-calc'),
+                    html.Div(id='senate-calc'),
+                    html.Div(id='proposition-calc'),
                     html.Div(id='output-data-upload'),
                 ])
 
@@ -223,7 +217,7 @@ def get_loading(list_of_contents, list_of_names, list_of_dates): # calc_fin_num
         return html.Div("Reading the results & calculating. This might take a few moments")
 
 
-def parse_contents(contents, filename, date, position_lst, proposition_lst):
+def parse_contents(contents, filename):
     content_type, content_string = contents.split(',')
 
     decoded = base64.b64decode(content_string)
@@ -235,37 +229,47 @@ def parse_contents(contents, filename, date, position_lst, proposition_lst):
         elif 'xls' in filename:
             # Assume that the user uploaded an excel file
             df = pd.read_excel(io.BytesIO(decoded))
-
     except Exception as e:
         print(e)
         return html.Div([
             'There was an error processing this file.'
         ])
-    # print(df.columns)
-
     # run calculations
-    # proposition_lst = ['Proposition 22A', 'Proposition 22B']
-    calculate_all(position_lst, proposition_lst, df)
+    return df
+    # calculate_senate(df)
+    # calculate_propositions(proposition_lst, df)
+    # return "Parse Content Success"
 
-    return "Parse Content Success"
-# html.Div([
-#         html.H5(filename),
-#         html.H6(datetime.datetime.fromtimestamp(date)),
+def parse_contents_execs(contents, filename, date, position_lst, proposition_lst):
+    """
+    Calculates file for senate
+    Returns nothing
+    Input: contents, filename, date, position_lst, proposition_lst
+    """
+    df = parse_contents(contents, filename)
+    calculate_execs(position_lst, df)
+    return
 
-#         dash_table.DataTable(
-#             df.to_dict('records'),
-#             [{'name': i, 'id': i} for i in df.columns]
-#         ),
+def parse_contents_senate(contents, filename, date, position_lst, proposition_lst):
+    """
+    Calculates file for senate
+    Returns nothing
+    Input: contents, filename, date, position_lst, proposition_lst
+    """
+    df = parse_contents(contents, filename)
+    calculate_senate(df)
+    return
 
-#         html.Hr(),  # horizontal line
+def parse_contents_proposition(contents, filename, date, position_lst, proposition_lst):
+    """
+    Calculates file for proposition
+    Returns nothing
+    Input: contents, filename, date, position_lst, proposition_lst
+    """
+    df = parse_contents(contents, filename)
+    calculate_propositions(proposition_lst, df)
+    return
 
-#         # For debugging, display the raw contents provided by the web browser
-#         html.Div('Raw Content'),
-#         html.Pre(contents[0:200] + '...', style={
-#             'whiteSpace': 'pre-wrap',
-#             'wordBreak': 'break-all'
-#         })
-#     ])
 
 def convert_dtype(x):
     if not x:
@@ -274,6 +278,80 @@ def convert_dtype(x):
         return str(x)   
     except:        
         return ''
+
+
+
+"""
+html.Div(id='exec-first-half-calc'),
+html.Div(id='exec-second-half-calc'),
+html.Div(id='senate-calc'),
+html.Div(id='proposition-calc'),
+"""
+
+@app.callback(Output('exec-first-half-calc', 'children'),
+              Input('upload-results-data', 'contents'),
+              State('upload-results-data', 'filename'),
+              State('upload-results-data', 'last_modified'),
+              Input('output-position-str', 'value'),
+              Input('output-proposition-str', 'value')
+)
+def update_output(list_of_contents, list_of_names, list_of_dates, position_lst_str, proposition_list_str):
+    print("Received the file")
+    if list_of_contents is not None:
+        position_lst = txt_str_to_list(position_lst_str)
+        position_first_half, position_second_half = split_list(position_lst)
+        proposition_lst = txt_str_to_list(proposition_list_str)
+        parse_contents_execs(list_of_contents, list_of_names, list_of_dates, position_first_half, proposition_lst)
+        return
+
+
+@app.callback(Output('exec-second-half-calc', 'children'),
+              Input('upload-results-data', 'contents'),
+              State('upload-results-data', 'filename'),
+              State('upload-results-data', 'last_modified'),
+              Input('output-position-str', 'value'),
+              Input('output-proposition-str', 'value')
+)
+def update_output(list_of_contents, list_of_names, list_of_dates, position_lst_str, proposition_list_str):
+    print("Received the file")
+    if list_of_contents is not None:
+        position_lst = txt_str_to_list(position_lst_str)
+        position_first_half, position_second_half = split_list(position_lst)
+        proposition_lst = txt_str_to_list(proposition_list_str)
+        parse_contents_execs(list_of_contents, list_of_names, list_of_dates, position_second_half, proposition_lst)
+        return
+
+
+@app.callback(Output('senate-calc', 'children'),
+              Input('upload-results-data', 'contents'),
+              State('upload-results-data', 'filename'),
+              State('upload-results-data', 'last_modified'),
+              Input('output-position-str', 'value'),
+              Input('output-proposition-str', 'value')
+)
+def update_output(list_of_contents, list_of_names, list_of_dates, position_lst_str, proposition_list_str):
+    print("Received the file")
+    if list_of_contents is not None:
+        position_lst = txt_str_to_list(position_lst_str)
+        proposition_lst = txt_str_to_list(proposition_list_str)
+        parse_contents_senate(list_of_contents, list_of_names, list_of_dates, position_lst, proposition_lst)
+        return
+    
+
+@app.callback(Output('proposition-calc', 'children'),
+              Input('upload-results-data', 'contents'),
+              State('upload-results-data', 'filename'),
+              State('upload-results-data', 'last_modified'),
+              Input('output-position-str', 'value'),
+              Input('output-proposition-str', 'value')
+)
+def update_output(list_of_contents, list_of_names, list_of_dates, position_lst_str, proposition_list_str):
+    print("Received the file")
+    if list_of_contents is not None:
+        position_lst = txt_str_to_list(position_lst_str)
+        proposition_lst = txt_str_to_list(proposition_list_str)
+        parse_contents_proposition(list_of_contents, list_of_names, list_of_dates, position_lst, proposition_lst)
+        return
 
 
 @app.callback(Output('output-data-upload', 'children'),
@@ -285,329 +363,324 @@ def convert_dtype(x):
 )
 def update_output(list_of_contents, list_of_names, list_of_dates, position_lst_str, proposition_list_str):
     print("Received the file")
-
-
     if list_of_contents is not None:
-        position_lst = txt_str_to_list(position_lst_str)
-        proposition_lst = txt_str_to_list(proposition_list_str)
-        children = [parse_contents(list_of_contents, list_of_names, list_of_dates, position_lst, proposition_lst)]
-        # return html.Div(id='results')
+        # position_lst = txt_str_to_list(position_lst_str)
+        # proposition_lst = txt_str_to_list(proposition_list_str)
+        # parse_contents_senate(list_of_contents, list_of_names, list_of_dates, position_lst, proposition_lst)
         return html.Div(id='total-rslt')
 
 
+# @app.callback(
+#     Output('results', 'children'),
+#     Input('upload-results-data', 'contents')
+# )
+# def get_final_results(data):
+#     return html.Div([
+#             html.Br(),
+#             dbc.Row(dbc.Col(html.Div("President"), width={"size": 9}), justify="center"),
+#             html.Br(),
+#             dbc.Row(dbc.Col(html.Div(id='president-rslt'), width={"size": 9}), justify="around"),
+#             html.Br(), html.Br(),
+
+#             dbc.Row(dbc.Col(html.Div("Executive Vice President"), width={"size": 9}), justify="center"),
+#             html.Br(),
+#             dbc.Row(dbc.Col(html.Div(id='execvp-rslt'), width={"size": 9}), justify="around"),
+#             html.Br(), html.Br(),
+
+#             dbc.Row(dbc.Col(html.Div("Academic Affairs Vice President"), width={"size": 9}), justify="center"),
+#             html.Br(),
+#             dbc.Row(dbc.Col(html.Div(id='academic-rslt'), width={"size": 9}), justify="around"),
+#             html.Br(), html.Br(),
+
+#             dbc.Row(dbc.Col(html.Div("External Affairs Vice President"), width={"size": 9}), justify="center"),
+#             html.Br(),
+#             dbc.Row(dbc.Col(html.Div(id='external-rslt'), width={"size": 9}), justify="around"),
+#             html.Br(), html.Br(),
+
+#             dbc.Row(dbc.Col(html.Div("Student Advocate"), width={"size": 9}), justify="center"),
+#             html.Br(),
+#             dbc.Row(dbc.Col(html.Div(id='advocate-rslt'), width={"size": 9}), justify="around"),
+#             html.Br(), html.Br(),
+
+#             dbc.Row(dbc.Col(html.Div("Transfer Representative"), width={"size": 9}), justify="center"),
+#             html.Br(),
+#             dbc.Row(dbc.Col(html.Div(id='transfer-rslt'), width={"size": 9}), justify="around"),
+#             html.Br(), html.Br(),
+
+#             dbc.Row(dbc.Col(html.Div("Senate"), width={"size": 9}), justify="center"),
+#             html.Br(),
+#             dbc.Row(dbc.Col(html.Div(id='senate-rslt'), width={"size": 9}), justify="around"),
+
+#             html.Br()],
+#             style={'width': '100%'})
 
 
-@app.callback(
-    Output('results', 'children'),
-    Input('upload-results-data', 'contents')
-)
-def get_final_results(data):
-    return html.Div([
-            html.Br(),
-            dbc.Row(dbc.Col(html.Div("President"), width={"size": 9}), justify="center"),
-            html.Br(),
-            dbc.Row(dbc.Col(html.Div(id='president-rslt'), width={"size": 9}), justify="around"),
-            html.Br(), html.Br(),
+# @app.callback(
+#         Output("transfer-rslt", "children"),
+#         Input("tabs", "value")
+# )
+# def transfer_table(val):
+#     if os.path.isfile('results/transfer_representative.txt'):
+#         data = ''
+#         with open('results/transfer_representative.txt', 'r') as file:
+#             data = file.read()
+#         # return html.Div(data, style={'whiteSpace': 'pre-line'})
 
-            dbc.Row(dbc.Col(html.Div("Executive Vice President"), width={"size": 9}), justify="center"),
-            html.Br(),
-            dbc.Row(dbc.Col(html.Div(id='execvp-rslt'), width={"size": 9}), justify="around"),
-            html.Br(), html.Br(),
-
-            dbc.Row(dbc.Col(html.Div("Academic Affairs Vice President"), width={"size": 9}), justify="center"),
-            html.Br(),
-            dbc.Row(dbc.Col(html.Div(id='academic-rslt'), width={"size": 9}), justify="around"),
-            html.Br(), html.Br(),
-
-            dbc.Row(dbc.Col(html.Div("External Affairs Vice President"), width={"size": 9}), justify="center"),
-            html.Br(),
-            dbc.Row(dbc.Col(html.Div(id='external-rslt'), width={"size": 9}), justify="around"),
-            html.Br(), html.Br(),
-
-            dbc.Row(dbc.Col(html.Div("Student Advocate"), width={"size": 9}), justify="center"),
-            html.Br(),
-            dbc.Row(dbc.Col(html.Div(id='advocate-rslt'), width={"size": 9}), justify="around"),
-            html.Br(), html.Br(),
-
-            dbc.Row(dbc.Col(html.Div("Transfer Representative"), width={"size": 9}), justify="center"),
-            html.Br(),
-            dbc.Row(dbc.Col(html.Div(id='transfer-rslt'), width={"size": 9}), justify="around"),
-            html.Br(), html.Br(),
-
-            dbc.Row(dbc.Col(html.Div("Senate"), width={"size": 9}), justify="center"),
-            html.Br(),
-            dbc.Row(dbc.Col(html.Div(id='senate-rslt'), width={"size": 9}), justify="around"),
-
-            html.Br()],
-            style={'width': '100%'})
-
-
-@app.callback(
-        Output("transfer-rslt", "children"),
-        Input("tabs", "value")
-)
-def transfer_table(val):
-    if os.path.isfile('results/transfer_representative.txt'):
-        data = ''
-        with open('results/transfer_representative.txt', 'r') as file:
-            data = file.read()
-        # return html.Div(data, style={'whiteSpace': 'pre-line'})
-
-        StringData = io.StringIO("""{}""".format(data))
+#         StringData = io.StringIO("""{}""".format(data))
         
-        # let's read the data using the Pandas
-        # read_csv() function
-        dataframe = pd.read_csv(StringData, sep ="\r\n")
-        first_col = dataframe.columns[0]
-        dataframe["Candidate"] = dataframe[first_col].str.split('\s+').str[:-2].apply(lambda parts: " ".join(parts))
-        dataframe["Votes"] = dataframe[first_col].str.split('\s+').str[-2]
-        dataframe["Status"] = dataframe[first_col].str.split('\s+').str[-1]
-        dataframe = dataframe.loc[:, dataframe.columns != first_col]
-        max_rows = 26
-        result = [html.Tr([html.Th(col, style=style.TABLE_CELL) for col in dataframe.columns], style={"text-align": "left"})] # Header
-        merge_span = len(dataframe.columns)
-        for i in range(min(len(dataframe), max_rows)):
-            if i != 0:
-                # Body
-                if dataframe.iloc[i][2] == "Elected":
-                    result = result + [html.Tr([html.Td(dataframe.iloc[i][col], style=style.TABLE_CELL_ELECTED) for col in dataframe.columns], 
-                                            style={"text-align": "left"})]
-                else:
-                    result = result + [html.Tr([html.Td(dataframe.iloc[i][col], style=style.TABLE_CELL) for col in dataframe.columns],
-                                            style={"text-align": "left"})]
-        return html.Table(result, style=style.TABLE_CONTENT)
-    else:
-        html.Div("Waiting on Transfer Data")
+#         # let's read the data using the Pandas
+#         # read_csv() function
+#         dataframe = pd.read_csv(StringData, sep ="\r\n")
+#         first_col = dataframe.columns[0]
+#         dataframe["Candidate"] = dataframe[first_col].str.split('\s+').str[:-2].apply(lambda parts: " ".join(parts))
+#         dataframe["Votes"] = dataframe[first_col].str.split('\s+').str[-2]
+#         dataframe["Status"] = dataframe[first_col].str.split('\s+').str[-1]
+#         dataframe = dataframe.loc[:, dataframe.columns != first_col]
+#         max_rows = 26
+#         result = [html.Tr([html.Th(col, style=style.TABLE_CELL) for col in dataframe.columns], style={"text-align": "left"})] # Header
+#         merge_span = len(dataframe.columns)
+#         for i in range(min(len(dataframe), max_rows)):
+#             if i != 0:
+#                 # Body
+#                 if dataframe.iloc[i][2] == "Elected":
+#                     result = result + [html.Tr([html.Td(dataframe.iloc[i][col], style=style.TABLE_CELL_ELECTED) for col in dataframe.columns], 
+#                                             style={"text-align": "left"})]
+#                 else:
+#                     result = result + [html.Tr([html.Td(dataframe.iloc[i][col], style=style.TABLE_CELL) for col in dataframe.columns],
+#                                             style={"text-align": "left"})]
+#         return html.Table(result, style=style.TABLE_CONTENT)
+#     else:
+#         html.Div("Waiting on Transfer Data")
 
 
-@app.callback(
-        Output("senate-rslt", "children"),
-        Input("tabs", "value")
-)
-def senate_table(val):
-    file_name = 'results/senate.txt'
-    if os.path.isfile(file_name):
-        data = ''
-        with open(file_name, 'r') as file:
-            data = file.read()
-        # return html.Div(data, style={'whiteSpace': 'pre-line'})
+# @app.callback(
+#         Output("senate-rslt", "children"),
+#         Input("tabs", "value")
+# )
+# def senate_table(val):
+#     file_name = 'results/senate.txt'
+#     if os.path.isfile(file_name):
+#         data = ''
+#         with open(file_name, 'r') as file:
+#             data = file.read()
+#         # return html.Div(data, style={'whiteSpace': 'pre-line'})
 
-        StringData = io.StringIO("""{}""".format(data))
+#         StringData = io.StringIO("""{}""".format(data))
         
-        # let's read the data using the Pandas
-        # read_csv() function
-        dataframe = pd.read_csv(StringData, sep ="\r\n")
-        first_col = dataframe.columns[0]
-        dataframe["Candidate"] = dataframe[first_col].str.split('\s+').str[:-2].apply(lambda parts: " ".join(parts))
-        dataframe["Votes"] = dataframe[first_col].str.split('\s+').str[-2]
-        dataframe["Status"] = dataframe[first_col].str.split('\s+').str[-1]
-        dataframe = dataframe.loc[:, dataframe.columns != first_col]
-        max_rows = 100
-        result = [html.Tr([html.Th(col, style=style.TABLE_CELL) for col in dataframe.columns], style={"text-align": "left"})] # Header
-        merge_span = len(dataframe.columns)
-        for i in range(min(len(dataframe), max_rows)):
-            if i != 0:
-                # Body
-                if dataframe.iloc[i][2] == "Elected":
-                    result = result + [html.Tr([html.Td(dataframe.iloc[i][col], style=style.TABLE_CELL_ELECTED) for col in dataframe.columns], 
-                                            style={"text-align": "left"})]
-                else:
-                    result = result + [html.Tr([html.Td(dataframe.iloc[i][col], style=style.TABLE_CELL) for col in dataframe.columns],
-                                            style={"text-align": "left"})]
-        return html.Table(result, style=style.TABLE_CONTENT)
-    else:
-        html.Div("Waiting on Senate Data")
+#         # let's read the data using the Pandas
+#         # read_csv() function
+#         dataframe = pd.read_csv(StringData, sep ="\r\n")
+#         first_col = dataframe.columns[0]
+#         dataframe["Candidate"] = dataframe[first_col].str.split('\s+').str[:-2].apply(lambda parts: " ".join(parts))
+#         dataframe["Votes"] = dataframe[first_col].str.split('\s+').str[-2]
+#         dataframe["Status"] = dataframe[first_col].str.split('\s+').str[-1]
+#         dataframe = dataframe.loc[:, dataframe.columns != first_col]
+#         max_rows = 100
+#         result = [html.Tr([html.Th(col, style=style.TABLE_CELL) for col in dataframe.columns], style={"text-align": "left"})] # Header
+#         merge_span = len(dataframe.columns)
+#         for i in range(min(len(dataframe), max_rows)):
+#             if i != 0:
+#                 # Body
+#                 if dataframe.iloc[i][2] == "Elected":
+#                     result = result + [html.Tr([html.Td(dataframe.iloc[i][col], style=style.TABLE_CELL_ELECTED) for col in dataframe.columns], 
+#                                             style={"text-align": "left"})]
+#                 else:
+#                     result = result + [html.Tr([html.Td(dataframe.iloc[i][col], style=style.TABLE_CELL) for col in dataframe.columns],
+#                                             style={"text-align": "left"})]
+#         return html.Table(result, style=style.TABLE_CONTENT)
+#     else:
+#         html.Div("Waiting on Senate Data")
 
 
-@app.callback(
-        Output("president-rslt", "children"),
-        Input("tabs", "value")
-)
-def president_table(val):
-    file_name = 'results/president.txt'
-    if os.path.isfile(file_name):
-        data = ''
-        with open(file_name, 'r') as file:
-            data = file.read()
-        # return html.Div(data, style={'whiteSpace': 'pre-line'})
+# @app.callback(
+#         Output("president-rslt", "children"),
+#         Input("tabs", "value")
+# )
+# def president_table(val):
+#     file_name = 'results/president.txt'
+#     if os.path.isfile(file_name):
+#         data = ''
+#         with open(file_name, 'r') as file:
+#             data = file.read()
+#         # return html.Div(data, style={'whiteSpace': 'pre-line'})
 
-        StringData = io.StringIO("""{}""".format(data))
+#         StringData = io.StringIO("""{}""".format(data))
         
-        # let's read the data using the Pandas
-        # read_csv() function
-        dataframe = pd.read_csv(StringData, sep ="\r\n")
-        first_col = dataframe.columns[0]
-        dataframe["Candidate"] = dataframe[first_col].str.split('\s+').str[:-2].apply(lambda parts: " ".join(parts))
-        dataframe["Votes"] = dataframe[first_col].str.split('\s+').str[-2]
-        dataframe["Status"] = dataframe[first_col].str.split('\s+').str[-1]
-        dataframe = dataframe.loc[:, dataframe.columns != first_col]
-        max_rows = 100
-        result = [html.Tr([html.Th(col, style=style.TABLE_CELL) for col in dataframe.columns], style={"text-align": "left"})] # Header
-        merge_span = len(dataframe.columns)
-        for i in range(min(len(dataframe), max_rows)):
-            if i != 0:
-                # Body
-                if dataframe.iloc[i][2] == "Elected":
-                    result = result + [html.Tr([html.Td(dataframe.iloc[i][col], style=style.TABLE_CELL_ELECTED) for col in dataframe.columns], 
-                                            style={"text-align": "left"})]
-                else:
-                    result = result + [html.Tr([html.Td(dataframe.iloc[i][col], style=style.TABLE_CELL) for col in dataframe.columns],
-                                            style={"text-align": "left"})]
-        return html.Table(result, style=style.TABLE_CONTENT)
-    else:
-        html.Div("Waiting on President Data")
+#         # let's read the data using the Pandas
+#         # read_csv() function
+#         dataframe = pd.read_csv(StringData, sep ="\r\n")
+#         first_col = dataframe.columns[0]
+#         dataframe["Candidate"] = dataframe[first_col].str.split('\s+').str[:-2].apply(lambda parts: " ".join(parts))
+#         dataframe["Votes"] = dataframe[first_col].str.split('\s+').str[-2]
+#         dataframe["Status"] = dataframe[first_col].str.split('\s+').str[-1]
+#         dataframe = dataframe.loc[:, dataframe.columns != first_col]
+#         max_rows = 100
+#         result = [html.Tr([html.Th(col, style=style.TABLE_CELL) for col in dataframe.columns], style={"text-align": "left"})] # Header
+#         merge_span = len(dataframe.columns)
+#         for i in range(min(len(dataframe), max_rows)):
+#             if i != 0:
+#                 # Body
+#                 if dataframe.iloc[i][2] == "Elected":
+#                     result = result + [html.Tr([html.Td(dataframe.iloc[i][col], style=style.TABLE_CELL_ELECTED) for col in dataframe.columns], 
+#                                             style={"text-align": "left"})]
+#                 else:
+#                     result = result + [html.Tr([html.Td(dataframe.iloc[i][col], style=style.TABLE_CELL) for col in dataframe.columns],
+#                                             style={"text-align": "left"})]
+#         return html.Table(result, style=style.TABLE_CONTENT)
+#     else:
+#         html.Div("Waiting on President Data")
 
 
-@app.callback(
-        Output("execvp-rslt", "children"),
-        Input("tabs", "value")
-)
-def execvp_table(val):
-    file_name = 'results/executive_vice_president.txt'
-    if os.path.isfile(file_name):
-        data = ''
-        with open(file_name, 'r') as file:
-            data = file.read()
-        # return html.Div(data, style={'whiteSpace': 'pre-line'})
+# @app.callback(
+#         Output("execvp-rslt", "children"),
+#         Input("tabs", "value")
+# )
+# def execvp_table(val):
+#     file_name = 'results/executive_vice_president.txt'
+#     if os.path.isfile(file_name):
+#         data = ''
+#         with open(file_name, 'r') as file:
+#             data = file.read()
+#         # return html.Div(data, style={'whiteSpace': 'pre-line'})
 
-        StringData = io.StringIO("""{}""".format(data))
+#         StringData = io.StringIO("""{}""".format(data))
         
-        # let's read the data using the Pandas
-        # read_csv() function
-        dataframe = pd.read_csv(StringData, sep ="\r\n")
-        first_col = dataframe.columns[0]
-        dataframe["Candidate"] = dataframe[first_col].str.split('\s+').str[:-2].apply(lambda parts: " ".join(parts))
-        dataframe["Votes"] = dataframe[first_col].str.split('\s+').str[-2]
-        dataframe["Status"] = dataframe[first_col].str.split('\s+').str[-1]
-        dataframe = dataframe.loc[:, dataframe.columns != first_col]
-        max_rows = 100
-        result = [html.Tr([html.Th(col, style=style.TABLE_CELL) for col in dataframe.columns], style={"text-align": "left"})] # Header
-        merge_span = len(dataframe.columns)
-        for i in range(min(len(dataframe), max_rows)):
-            if i != 0:
-                # Body
-                if dataframe.iloc[i][2] == "Elected":
-                    result = result + [html.Tr([html.Td(dataframe.iloc[i][col], style=style.TABLE_CELL_ELECTED) for col in dataframe.columns], 
-                                            style={"text-align": "left"})]
-                else:
-                    result = result + [html.Tr([html.Td(dataframe.iloc[i][col], style=style.TABLE_CELL) for col in dataframe.columns],
-                                            style={"text-align": "left"})]
-        return html.Table(result, style=style.TABLE_CONTENT)
-    else:
-        html.Div("Waiting on Exec VP Data")
+#         # let's read the data using the Pandas
+#         # read_csv() function
+#         dataframe = pd.read_csv(StringData, sep ="\r\n")
+#         first_col = dataframe.columns[0]
+#         dataframe["Candidate"] = dataframe[first_col].str.split('\s+').str[:-2].apply(lambda parts: " ".join(parts))
+#         dataframe["Votes"] = dataframe[first_col].str.split('\s+').str[-2]
+#         dataframe["Status"] = dataframe[first_col].str.split('\s+').str[-1]
+#         dataframe = dataframe.loc[:, dataframe.columns != first_col]
+#         max_rows = 100
+#         result = [html.Tr([html.Th(col, style=style.TABLE_CELL) for col in dataframe.columns], style={"text-align": "left"})] # Header
+#         merge_span = len(dataframe.columns)
+#         for i in range(min(len(dataframe), max_rows)):
+#             if i != 0:
+#                 # Body
+#                 if dataframe.iloc[i][2] == "Elected":
+#                     result = result + [html.Tr([html.Td(dataframe.iloc[i][col], style=style.TABLE_CELL_ELECTED) for col in dataframe.columns], 
+#                                             style={"text-align": "left"})]
+#                 else:
+#                     result = result + [html.Tr([html.Td(dataframe.iloc[i][col], style=style.TABLE_CELL) for col in dataframe.columns],
+#                                             style={"text-align": "left"})]
+#         return html.Table(result, style=style.TABLE_CONTENT)
+#     else:
+#         html.Div("Waiting on Exec VP Data")
 
 
-@app.callback(
-        Output("academic-rslt", "children"),
-        Input("tabs", "value")
-)
-def academic_table(val):
-    file_name = 'results/academic_affairs_vice_president.txt'
-    if os.path.isfile(file_name):
-        data = ''
-        with open(file_name, 'r') as file:
-            data = file.read()
-        # return html.Div(data, style={'whiteSpace': 'pre-line'})
+# @app.callback(
+#         Output("academic-rslt", "children"),
+#         Input("tabs", "value")
+# )
+# def academic_table(val):
+#     file_name = 'results/academic_affairs_vice_president.txt'
+#     if os.path.isfile(file_name):
+#         data = ''
+#         with open(file_name, 'r') as file:
+#             data = file.read()
+#         # return html.Div(data, style={'whiteSpace': 'pre-line'})
 
-        StringData = io.StringIO("""{}""".format(data))
+#         StringData = io.StringIO("""{}""".format(data))
         
-        # let's read the data using the Pandas
-        # read_csv() function
-        dataframe = pd.read_csv(StringData, sep ="\r\n")
-        first_col = dataframe.columns[0]
-        dataframe["Candidate"] = dataframe[first_col].str.split('\s+').str[:-2].apply(lambda parts: " ".join(parts))
-        dataframe["Votes"] = dataframe[first_col].str.split('\s+').str[-2]
-        dataframe["Status"] = dataframe[first_col].str.split('\s+').str[-1]
-        dataframe = dataframe.loc[:, dataframe.columns != first_col]
-        max_rows = 100
-        result = [html.Tr([html.Th(col, style=style.TABLE_CELL) for col in dataframe.columns], style={"text-align": "left"})] # Header
-        merge_span = len(dataframe.columns)
-        for i in range(min(len(dataframe), max_rows)):
-            if i != 0:
-                # Body
-                if dataframe.iloc[i][2] == "Elected":
-                    result = result + [html.Tr([html.Td(dataframe.iloc[i][col], style=style.TABLE_CELL_ELECTED) for col in dataframe.columns], 
-                                            style={"text-align": "left"})]
-                else:
-                    result = result + [html.Tr([html.Td(dataframe.iloc[i][col], style=style.TABLE_CELL) for col in dataframe.columns],
-                                            style={"text-align": "left"})]
-        return html.Table(result, style=style.TABLE_CONTENT)
-    else:
-        html.Div("Waiting on Academic Affairs VP Data")
+#         # let's read the data using the Pandas
+#         # read_csv() function
+#         dataframe = pd.read_csv(StringData, sep ="\r\n")
+#         first_col = dataframe.columns[0]
+#         dataframe["Candidate"] = dataframe[first_col].str.split('\s+').str[:-2].apply(lambda parts: " ".join(parts))
+#         dataframe["Votes"] = dataframe[first_col].str.split('\s+').str[-2]
+#         dataframe["Status"] = dataframe[first_col].str.split('\s+').str[-1]
+#         dataframe = dataframe.loc[:, dataframe.columns != first_col]
+#         max_rows = 100
+#         result = [html.Tr([html.Th(col, style=style.TABLE_CELL) for col in dataframe.columns], style={"text-align": "left"})] # Header
+#         merge_span = len(dataframe.columns)
+#         for i in range(min(len(dataframe), max_rows)):
+#             if i != 0:
+#                 # Body
+#                 if dataframe.iloc[i][2] == "Elected":
+#                     result = result + [html.Tr([html.Td(dataframe.iloc[i][col], style=style.TABLE_CELL_ELECTED) for col in dataframe.columns], 
+#                                             style={"text-align": "left"})]
+#                 else:
+#                     result = result + [html.Tr([html.Td(dataframe.iloc[i][col], style=style.TABLE_CELL) for col in dataframe.columns],
+#                                             style={"text-align": "left"})]
+#         return html.Table(result, style=style.TABLE_CONTENT)
+#     else:
+#         html.Div("Waiting on Academic Affairs VP Data")
 
-@app.callback(
-        Output("external-rslt", "children"),
-        Input("tabs", "value")
-)
-def external_table(val):
-    file_name = 'results/external_affairs_vice_president.txt'
-    if os.path.isfile(file_name):
-        data = ''
-        with open(file_name, 'r') as file:
-            data = file.read()
-        # return html.Div(data, style={'whiteSpace': 'pre-line'})
+# @app.callback(
+#         Output("external-rslt", "children"),
+#         Input("tabs", "value")
+# )
+# def external_table(val):
+#     file_name = 'results/external_affairs_vice_president.txt'
+#     if os.path.isfile(file_name):
+#         data = ''
+#         with open(file_name, 'r') as file:
+#             data = file.read()
+#         # return html.Div(data, style={'whiteSpace': 'pre-line'})
 
-        StringData = io.StringIO("""{}""".format(data))
+#         StringData = io.StringIO("""{}""".format(data))
         
-        # let's read the data using the Pandas
-        # read_csv() function
-        dataframe = pd.read_csv(StringData, sep ="\r\n")
-        first_col = dataframe.columns[0]
-        dataframe["Candidate"] = dataframe[first_col].str.split('\s+').str[:-2].apply(lambda parts: " ".join(parts))
-        dataframe["Votes"] = dataframe[first_col].str.split('\s+').str[-2]
-        dataframe["Status"] = dataframe[first_col].str.split('\s+').str[-1]
-        dataframe = dataframe.loc[:, dataframe.columns != first_col]
-        max_rows = 100
-        result = [html.Tr([html.Th(col, style=style.TABLE_CELL) for col in dataframe.columns], style={"text-align": "left"})] # Header
-        merge_span = len(dataframe.columns)
-        for i in range(min(len(dataframe), max_rows)):
-            if i != 0:
-                # Body
-                if dataframe.iloc[i][2] == "Elected":
-                    result = result + [html.Tr([html.Td(dataframe.iloc[i][col], style=style.TABLE_CELL_ELECTED) for col in dataframe.columns], 
-                                            style={"text-align": "left"})]
-                else:
-                    result = result + [html.Tr([html.Td(dataframe.iloc[i][col], style=style.TABLE_CELL) for col in dataframe.columns],
-                                            style={"text-align": "left"})]
-        return html.Table(result, style=style.TABLE_CONTENT)
-    else:
-        html.Div("Waiting on External Affairs VP Data")
+#         # let's read the data using the Pandas
+#         # read_csv() function
+#         dataframe = pd.read_csv(StringData, sep ="\r\n")
+#         first_col = dataframe.columns[0]
+#         dataframe["Candidate"] = dataframe[first_col].str.split('\s+').str[:-2].apply(lambda parts: " ".join(parts))
+#         dataframe["Votes"] = dataframe[first_col].str.split('\s+').str[-2]
+#         dataframe["Status"] = dataframe[first_col].str.split('\s+').str[-1]
+#         dataframe = dataframe.loc[:, dataframe.columns != first_col]
+#         max_rows = 100
+#         result = [html.Tr([html.Th(col, style=style.TABLE_CELL) for col in dataframe.columns], style={"text-align": "left"})] # Header
+#         merge_span = len(dataframe.columns)
+#         for i in range(min(len(dataframe), max_rows)):
+#             if i != 0:
+#                 # Body
+#                 if dataframe.iloc[i][2] == "Elected":
+#                     result = result + [html.Tr([html.Td(dataframe.iloc[i][col], style=style.TABLE_CELL_ELECTED) for col in dataframe.columns], 
+#                                             style={"text-align": "left"})]
+#                 else:
+#                     result = result + [html.Tr([html.Td(dataframe.iloc[i][col], style=style.TABLE_CELL) for col in dataframe.columns],
+#                                             style={"text-align": "left"})]
+#         return html.Table(result, style=style.TABLE_CONTENT)
+#     else:
+#         html.Div("Waiting on External Affairs VP Data")
 
-@app.callback(
-        Output("advocate-rslt", "children"),
-        Input("tabs", "value")
-)
-def advocate_table(val):
-    file_name = 'results/student_advocate.txt'
-    if os.path.isfile(file_name):
-        data = ''
-        with open(file_name, 'r') as file:
-            data = file.read()
-        # return html.Div(data, style={'whiteSpace': 'pre-line'})
+# @app.callback(
+#         Output("advocate-rslt", "children"),
+#         Input("tabs", "value")
+# )
+# def advocate_table(val):
+#     file_name = 'results/student_advocate.txt'
+#     if os.path.isfile(file_name):
+#         data = ''
+#         with open(file_name, 'r') as file:
+#             data = file.read()
+#         # return html.Div(data, style={'whiteSpace': 'pre-line'})
 
-        StringData = io.StringIO("""{}""".format(data))
+#         StringData = io.StringIO("""{}""".format(data))
         
-        dataframe = pd.read_csv(StringData, sep ="\r\n")
-        first_col = dataframe.columns[0]
-        dataframe["Candidate"] = dataframe[first_col].str.split('\s+').str[:-2].apply(lambda parts: " ".join(parts))
-        dataframe["Votes"] = dataframe[first_col].str.split('\s+').str[-2]
-        dataframe["Status"] = dataframe[first_col].str.split('\s+').str[-1]
-        dataframe = dataframe.loc[:, dataframe.columns != first_col]
-        max_rows = 100
-        result = [html.Tr([html.Th(col, style=style.TABLE_CELL) for col in dataframe.columns], style={"text-align": "left"})] # Header
-        merge_span = len(dataframe.columns)
-        for i in range(min(len(dataframe), max_rows)):
-            if i != 0:
-                # Body
-                if (dataframe.iloc[i][2] == "Elected"):
-                    result = result + [html.Tr([html.Td(dataframe.iloc[i][col], style=style.TABLE_CELL_ELECTED) for col in dataframe.columns], 
-                                            style={"text-align": "left"})]
-                else:
-                    result = result + [html.Tr([html.Td(dataframe.iloc[i][col], style=style.TABLE_CELL) for col in dataframe.columns],
-                                            style={"text-align": "left"})]
-        return html.Table(result, style=style.TABLE_CONTENT)
-    else:
-        html.Div("Waiting on Student Advocate Data")
+#         dataframe = pd.read_csv(StringData, sep ="\r\n")
+#         first_col = dataframe.columns[0]
+#         dataframe["Candidate"] = dataframe[first_col].str.split('\s+').str[:-2].apply(lambda parts: " ".join(parts))
+#         dataframe["Votes"] = dataframe[first_col].str.split('\s+').str[-2]
+#         dataframe["Status"] = dataframe[first_col].str.split('\s+').str[-1]
+#         dataframe = dataframe.loc[:, dataframe.columns != first_col]
+#         max_rows = 100
+#         result = [html.Tr([html.Th(col, style=style.TABLE_CELL) for col in dataframe.columns], style={"text-align": "left"})] # Header
+#         merge_span = len(dataframe.columns)
+#         for i in range(min(len(dataframe), max_rows)):
+#             if i != 0:
+#                 # Body
+#                 if (dataframe.iloc[i][2] == "Elected"):
+#                     result = result + [html.Tr([html.Td(dataframe.iloc[i][col], style=style.TABLE_CELL_ELECTED) for col in dataframe.columns], 
+#                                             style={"text-align": "left"})]
+#                 else:
+#                     result = result + [html.Tr([html.Td(dataframe.iloc[i][col], style=style.TABLE_CELL) for col in dataframe.columns],
+#                                             style={"text-align": "left"})]
+#         return html.Table(result, style=style.TABLE_CONTENT)
+#     else:
+#         html.Div("Waiting on Student Advocate Data")
 
 
 
@@ -618,6 +691,9 @@ def advocate_table(val):
         Input('output-proposition-str', 'value')
 )
 def result_table(val, position_lst_str, proposition_list_str):
+    """
+    With given position_lst_str and proposition_list_str, read the .txt files under results folder.
+    """
     position_lst = txt_str_to_list(position_lst_str)
     proposition_lst = txt_str_to_list(proposition_list_str)
     all_result_lst = position_lst + proposition_lst
@@ -676,7 +752,7 @@ def get_congratulations():
 
 CONGRATULATIONS = get_congratulations()
 
-app.layout = layout() #layout_file.layout()
+app.layout = layout()
 server = app.server
 
 if __name__ == '__main__':

@@ -1,0 +1,5 @@
+             Votes           Counts           Status
+0  Proposition 22B  Proposition 22B  Proposition 22B
+1              Yes             1359           Winner
+2               No              258         Rejected
+3          Abstain              200         Rejected

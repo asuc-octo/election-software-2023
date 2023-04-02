@@ -9,7 +9,7 @@ import os
 import pyrankvote
 from pyrankvote import Candidate, Ballot
 
-RESULTS_PATH = str(os.getcwd()) + "/results/" #str(os.getcwd()) + "/src/results/" #for local
+RESULTS_PATH = str(os.getcwd()) + "/src/results/" #for local # str(os.getcwd()) + "/results/" # for heroku
 
 def fix_non_break_space(df):
     raw_df_trial = pd.DataFrame()
@@ -352,7 +352,8 @@ def calculate_execs(position_lst_all, raw_df):
     print(folder)
     senate_str = 'Senate'
     position_lst = position_lst_all
-    position_lst.remove(senate_str)
+    if senate_str in position_lst:
+        position_lst.remove(senate_str)
     txt_file_names = get_txt_names_list(position_lst)
 
     pos_dict = combine_two_lists_to_dict(position_lst, txt_file_names)
@@ -390,7 +391,7 @@ def calculate_propositions(proposition_list, raw_df):
         f.close()
     return
 
-def calculate_all(position_lst, proposition_lst, raw_df):
+def calculate_senate_propositions(position_lst, proposition_lst, raw_df):
     """
     params:
         position_lst: list of positions running
