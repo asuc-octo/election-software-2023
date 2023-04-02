@@ -8,7 +8,7 @@ from collections import OrderedDict
 import pyrankvote
 from pyrankvote import Candidate, Ballot
 
-RESULTS_PATH = 'src/results/'
+RESULTS_PATH = 'app/src/results/'
 
 def fix_non_break_space(df):
     raw_df_trial = pd.DataFrame()

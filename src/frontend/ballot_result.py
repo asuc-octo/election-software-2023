@@ -588,7 +588,7 @@ def advocate_table(val):
     else:
         html.Div("Waiting on Student Advocate Data")
 
-RESULTS_PATH = 'src/results'
+RESULTS_PATH = 'src/results/'
 
 @app.callback(
         Output("total-rslt", "children"),
