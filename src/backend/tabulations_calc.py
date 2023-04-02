@@ -9,7 +9,7 @@ import os
 import pyrankvote
 from pyrankvote import Candidate, Ballot
 
-RESULTS_PATH = str(os.getcwd()) + "/results/"
+RESULTS_PATH = str(os.getcwd()) + "/results/" #str(os.getcwd()) + "/src/results/" #for local
 
 def fix_non_break_space(df):
     raw_df_trial = pd.DataFrame()
@@ -397,9 +397,9 @@ def calculate_all(position_lst, proposition_lst, raw_df):
         proposition_lst: names of propositions in the ballot, ie., ['Proposition 22A', 'Proposition 22B']
         raw_df: df directly from ballot results
     """
-    calculate_execs(position_lst, raw_df)
+    # calculate_execs(position_lst, raw_df)
     calculate_senate(raw_df)
-    calculate_propositions(proposition_lst, raw_df)
+    # calculate_propositions(proposition_lst, raw_df)
 
 
 # calculate_execs(raw_df)
