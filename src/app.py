@@ -30,11 +30,17 @@ from backend.tabulations_calc import calculate_senate, calculate_propositions, c
 title = html.P("ASUC Election 2023", style=style.TITLE)
 tabs = html.Div([tabs_layout(["Results", "About", "FAQ"])])
 
-RESULTS_PATH = str(os.getcwd()) + "/results/" #for heroku #str(os.getcwd()) + "/src/results/" # for local #
+# RESULTS_PATH = str(os.getcwd()) + "/results/" #for heroku 
+RESULTS_PATH = str(os.getcwd()) + "/src/results/" # for local
 
 def split_list(a_list):
     half = len(a_list)//2
     return a_list[:half], a_list[half:]
+
+def split_list_into_n(a, n):
+    k, m = divmod(len(a), n)
+    generator = (a[i*k+min(i, m):(i+1)*k+min(i+1, m)] for i in range(n))
+    return list(generator)
 
 def layout():
     return html.Div([
@@ -198,8 +204,9 @@ def upload_file(null, position_file_content, proposition_file_content):
                         multiple=False
                     ),
                     html.Div(id='loading'),
-                    html.Div(id='exec-first-half-calc'),
-                    html.Div(id='exec-second-half-calc'),
+                    html.Div(id='exec-first-group-calc'),
+                    html.Div(id='exec-second-group-calc'),
+                    html.Div(id='exec-third-group-calc'),
                     html.Div(id='senate-calc'),
                     html.Div(id='proposition-calc'),
                     html.Div(id='output-data-upload'),
@@ -282,13 +289,15 @@ def convert_dtype(x):
 
 
 """
-html.Div(id='exec-first-half-calc'),
-html.Div(id='exec-second-half-calc'),
+html.Div(id='exec-first-group-calc'),
+html.Div(id='exec-second-group-calc'),
 html.Div(id='senate-calc'),
 html.Div(id='proposition-calc'),
 """
 
-@app.callback(Output('exec-first-half-calc', 'value'),
+SPLIT_POSITION_N = 3
+
+@app.callback(Output('exec-first-group-calc', 'value'),
               Input('upload-results-data', 'contents'),
               State('upload-results-data', 'filename'),
               State('upload-results-data', 'last_modified'),
@@ -299,13 +308,13 @@ def update_output(list_of_contents, list_of_names, list_of_dates, position_lst_s
     print("Received the file")
     if list_of_contents is not None:
         position_lst = txt_str_to_list(position_lst_str)
-        position_first_half, position_second_half = split_list(position_lst)
+        position_first_group = split_list_into_n(position_lst, SPLIT_POSITION_N)[0]
         proposition_lst = txt_str_to_list(proposition_list_str)
-        parse_contents_execs(list_of_contents, list_of_names, list_of_dates, position_first_half, proposition_lst)
+        parse_contents_execs(list_of_contents, list_of_names, list_of_dates, position_first_group, proposition_lst)
         return 1
 
 
-@app.callback(Output('exec-second-half-calc', 'value'),
+@app.callback(Output('exec-second-group-calc', 'value'),
               Input('upload-results-data', 'contents'),
               State('upload-results-data', 'filename'),
               State('upload-results-data', 'last_modified'),
@@ -316,10 +325,26 @@ def update_output(list_of_contents, list_of_names, list_of_dates, position_lst_s
     print("Received the file")
     if list_of_contents is not None:
         position_lst = txt_str_to_list(position_lst_str)
-        position_first_half, position_second_half = split_list(position_lst)
+        position_second_group = split_list_into_n(position_lst, SPLIT_POSITION_N)[1]
         proposition_lst = txt_str_to_list(proposition_list_str)
-        parse_contents_execs(list_of_contents, list_of_names, list_of_dates, position_second_half, proposition_lst)
-        return
+        parse_contents_execs(list_of_contents, list_of_names, list_of_dates, position_second_group, proposition_lst)
+        return 1
+
+@app.callback(Output('exec-third-group-calc', 'value'),
+              Input('upload-results-data', 'contents'),
+              State('upload-results-data', 'filename'),
+              State('upload-results-data', 'last_modified'),
+              Input('output-position-str', 'value'),
+              Input('output-proposition-str', 'value')
+)
+def update_output(list_of_contents, list_of_names, list_of_dates, position_lst_str, proposition_list_str):
+    print("Received the file")
+    if list_of_contents is not None:
+        position_lst = txt_str_to_list(position_lst_str)
+        position_third_group = split_list_into_n(position_lst, SPLIT_POSITION_N)[2]
+        proposition_lst = txt_str_to_list(proposition_list_str)
+        parse_contents_execs(list_of_contents, list_of_names, list_of_dates, position_third_group, proposition_lst)
+        return 1
 
 
 @app.callback(Output('senate-calc', 'value'),
@@ -335,7 +360,7 @@ def update_output(list_of_contents, list_of_names, list_of_dates, position_lst_s
         position_lst = txt_str_to_list(position_lst_str)
         proposition_lst = txt_str_to_list(proposition_list_str)
         parse_contents_senate(list_of_contents, list_of_names, list_of_dates, position_lst, proposition_lst)
-        return
+        return 1
     
 
 @app.callback(Output('proposition-calc', 'value'),
@@ -351,7 +376,7 @@ def update_output(list_of_contents, list_of_names, list_of_dates, position_lst_s
         position_lst = txt_str_to_list(position_lst_str)
         proposition_lst = txt_str_to_list(proposition_list_str)
         parse_contents_proposition(list_of_contents, list_of_names, list_of_dates, position_lst, proposition_lst)
-        return
+        return 1
 
 
 @app.callback(Output('output-data-upload', 'children'),
