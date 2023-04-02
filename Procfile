@@ -1,1 +1,1 @@
-web: gunicorn --graceful-timeout 90 --chdir src app:server
+web: gunicorn --worker-class gevent --chdir src app:server
