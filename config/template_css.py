@@ -91,3 +91,35 @@ TABLE_CONTENT = {
     # "justify-content": "center",
     "font-size": "14px"
 }
+
+TABLE_CELL = {
+    "border-left": "thin solid",
+    "border-right": "thin solid",
+    "border-top": "thin solid", 
+    "border-bottom": "thin solid",
+    "padding-left": "5px",
+}
+
+TABLE_CELL_ELECTED = {
+    "border-left": "thin solid",
+    "border-right": "thin solid",
+    "border-top": "thin solid", 
+    "border-bottom": "thin solid",
+    "padding-left": "5px",
+    "background-color": "#D6EEEE"
+}
+
+UPLOAD_FILE_BIG = {
+    'width': '100%',
+    'height': '60px',
+    'lineHeight': '60px',
+    'borderWidth': '1px',
+    'borderStyle': 'dashed',
+    'borderRadius': '5px',
+    'textAlign': 'center',
+    'margin': '10px'
+}
+
+TEXT_CENTER = {
+    'text-align':'center' 
+    }

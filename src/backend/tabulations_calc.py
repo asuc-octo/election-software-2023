@@ -9,9 +9,21 @@ import pyrankvote
 from pyrankvote import Candidate, Ballot
 
 def fix_non_break_space(df):
-    raw_df_trial = df.replace('\xa0', ' ', regex=True)
-    return raw_df_trial.replace(r"^ +| +$", r"", regex=True)
+    raw_df_trial = pd.DataFrame()
+    try:
+        raw_df_trial = df.replace('\xa0', ' ', regex=True)
+        raw_df_trial.columns = raw_df_trial.columns.str.replace('\xa0', '', regex=True)
+    except:
+        raw_df_trial = df.replace('\xa0', ' ')
+        raw_df_trial.columns = raw_df_trial.columns.str.replace('\xa0', '')
+    try:
+        return raw_df_trial.replace(r"^ +| +$", r"", regex=True)
+    except:
+        return raw_df_trial.replace(r"^ +| +$", r"")
 
+def suffle_df(df):
+    return df.sample(frac = 1).reset_index(drop = True)
+    
 
 def fix_col_names(df_csv):
     df = df_csv.dropna(how = 'all').reset_index(drop = True)
@@ -26,6 +38,7 @@ def get_positional_data(position, raw_df_csv):
     ## 'Senate - 10 - 10.0' where 10.0 is the indicator number for rank 10 (not 1 or anything else)
     raw_df = fix_non_break_space(raw_df_csv)
     raw_df = fix_col_names(raw_df)
+    raw_df = suffle_df(raw_df)
     END_SUFFIX = '.0'
     SEPARATOR = ' - '
     pos_lst = ['President', 'Executive Vice President', 
@@ -60,6 +73,8 @@ def get_positional_data(position, raw_df_csv):
         pres_num_raw = raw_df[pres_num_col]
         
         # compress the rows to avoid repeating cols
+        print(position)
+        print(pres_num_raw.columns)
         pres_final_num_df = pd.DataFrame(pres_num_raw.bfill(axis=1).iloc[:, 0])
         # there should only be one column df
         pres_final_num_df.columns = [col_name]
@@ -116,10 +131,32 @@ def exec_calculations(df):
 
     raw_cand_str_df = raw_cand_str_df.loc[raw_cand_str_df.nunique(axis=1).ne(1)].reset_index(drop = True)
     for i in range(len(raw_cand_str_df)):
-        lst = raw_cand_str_df.loc[i, :].values.flatten().tolist()
+        """lst = raw_cand_str_df.loc[i, :].values.flatten().tolist()
         # Avoid any trailing NaN values
-        res = list(reversed(tuple(dropwhile(lambda x: x is candidates[2],
+        res = list(reversed(tuple(dropwhile(lambda x: x is Candidate("No Response"),
                                         reversed(lst)))))
+        print("res")
+        print(res)
+        rslt = Ballot(ranked_candidates = res)
+        ballots.append(rslt)"""
+
+
+        lst = raw_cand_str_df.loc[i, :].values.flatten().tolist()
+
+        target_element = Candidate("No Response")
+
+        # delete trailing 'No Response' values
+        def takewhile_including(iterable, value):
+            for it in iterable:
+                yield it
+                if it == value:
+                    return
+        with_dup = list(takewhile_including(lst, target_element))[:-1]
+
+        res = list(OrderedDict.fromkeys(with_dup))
+        # print("res")
+        # print(res)
+
         rslt = Ballot(ranked_candidates = res)
         ballots.append(rslt)
 
@@ -263,28 +300,61 @@ def proposition_calculation(proposition_name, raw_df):
     usage_col = usage_df.columns[0]
     usage_df[usage_col] = usage_df[usage_col].str.strip()
     rslt_df = usage_df[usage_col].value_counts().rename_axis('Votes').reset_index(name='counts')
+    rslt_df['counts'] = (rslt_df['counts']).astype('int')
     
-    rslt_df = pd.DataFrame(np.insert(rslt_df.values, 0, values=[proposition_name, ''], axis=0))
+    print("rslt_df['counts'].unique()")
+    print(rslt_df['counts'].unique())
+    index_winner = index_with_highest_col_value(rslt_df, 'counts')
+    print("index_winner")
+    print(index_winner)
+    df_len = len(rslt_df)
+    status_col = ["Rejected" if i != index_winner else "Winner" for i in range(df_len)]
+    rslt_df['Status'] = status_col
+    print("rslt_df")
+    print(rslt_df)
+    # Adding buffer 0th row to match the other position syntax
+    rslt_df = pd.DataFrame(np.insert(rslt_df.values, 0, values=[proposition_name] * len(rslt_df.columns), axis=0))
+    rslt_df.columns = ["Votes", "Counts", "Status"]
+
     return rslt_df.reset_index(drop = True)
+
+def index_with_highest_col_value(df, column_name):
+    """
+    Returns: (int) index of the df with the highest value in column
+    """
+    return df[column_name].argmax()
 
 # pos_lst = ['President', 'Executive Vice President', 
 #                 'External Affairs Vice President', 'Academic Affairs Vice President',
 #                'Student Advocate', 'Transfer Representative', 'Senate']
 # position = "Senate"
-raw_df = pd.read_csv("/Users/saruul/Desktop/Projects/asuc_ballot/2022ElectionResults.csv")
+# raw_df = pd.read_csv("/Users/saruul/Desktop/Projects/asuc_ballot/2022ElectionResults.csv")
 
-def calculate_execs(raw_df):
+def get_txt_names_list(base_name_lst):
+    result_lst = []
+    for name in base_name_lst:
+        file_name = name + '.txt'
+        result_lst.append(file_name)
+    return result_lst
+
+def combine_two_lists_to_dict(lst1, lst2):
+    if len(lst1) == len(lst2):
+        return {lst1[i]: lst2[i] for i in range(len(lst1))}
+    else:
+        Exception("Both lists need to be same length")
+
+def calculate_execs(position_lst_all, raw_df):
     folder = 'results/'
-    pos_dict = {'President': 'president.txt', 
-               'Executive Vice President' : 'executive_vice_president.txt', 
-                'External Affairs Vice President' : 'external_affairs_vice_president.txt', 
-                'Academic Affairs Vice President' : 'academic_affairs_vice_president.txt' ,
-                'Student Advocate' : 'student_advocate.txt', 
-                'Transfer Representative' : 'transfer_representative.txt'}
+    senate_str = 'Senate'
+    position_lst = position_lst_all
+    position_lst.remove(senate_str)
+    txt_file_names = get_txt_names_list(position_lst)
+
+    pos_dict = combine_two_lists_to_dict(position_lst, txt_file_names)
+
     for position, filename in pos_dict.items():
         rslt_df = get_positional_data(position, raw_df)
         get_final = get_final_rslt(exec_calculations(rslt_df))
-        # print(results)
         with open((folder + filename), "w") as f:
             print(get_final, file=f)
         f.close()
@@ -303,15 +373,30 @@ def calculate_senate(raw_df):
 
 def calculate_propositions(proposition_list, raw_df):
     result_df = pd.DataFrame()
+    folder = 'results/'
     for proposition_name in proposition_list:
-        if proposition_name == proposition_list[0]:
-            result_df = proposition_calculation(proposition_name, raw_df)
-        else:
-            result_df = pd.concat([result_df, proposition_calculation(proposition_name, raw_df)], axis = 0)
-    return result_df
+        filename = proposition_name + ".txt"
+        result_df = proposition_calculation(proposition_name, raw_df)
+        
+        with open((folder + filename), "w") as f:
+            print(result_df, file=f)
+        f.close()
+    return
 
-calculate_execs(raw_df)
-calculate_senate(raw_df)
-proposition_lst = ['Proposition 22A', 'Proposition 22B']
-rslt = calculate_propositions(proposition_lst, raw_df)
-print(rslt)
+def calculate_all(position_lst, proposition_lst, raw_df):
+    """
+    params:
+        position_lst: list of positions running
+        proposition_lst: names of propositions in the ballot, ie., ['Proposition 22A', 'Proposition 22B']
+        raw_df: df directly from ballot results
+    """
+    calculate_execs(position_lst, raw_df)
+    calculate_senate(raw_df)
+    calculate_propositions(proposition_lst, raw_df)
+
+
+# calculate_execs(raw_df)
+# calculate_senate(raw_df)
+# proposition_lst = ['Proposition 22A', 'Proposition 22B']
+# rslt = calculate_propositions(proposition_lst, raw_df)
+# print(rslt)

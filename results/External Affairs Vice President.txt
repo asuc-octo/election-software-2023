@@ -2,4 +2,5 @@ Candidate                                                                  Votes
 -----------------------------------------------------------------------  -------  --------
 Bailey Henderson | Independent | EAVP Government Relations Director | ♥     6714  Elected
 None of the above                                                            560  Rejected
-No Response                                                                   77  Rejected
+No Response                                                                    0  Rejected
+Blank Votes                                                                   77  Rejected
