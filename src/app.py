@@ -30,8 +30,8 @@ from backend.tabulations_calc import calculate_senate, calculate_propositions, c
 title = html.P("ASUC Election 2023", style=style.TITLE)
 tabs = html.Div([tabs_layout(["Results", "About", "FAQ"])])
 
-# RESULTS_PATH = str(os.getcwd()) + "/results/" #for heroku 
-RESULTS_PATH = str(os.getcwd()) + "/src/results/" # for local
+RESULTS_PATH = str(os.getcwd()) + "/results/" #for heroku 
+# RESULTS_PATH = str(os.getcwd()) + "/src/results/" # for local
 
 def split_list(a_list):
     half = len(a_list)//2
