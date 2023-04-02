@@ -4,11 +4,12 @@ import numpy as np
 import math
 from itertools import dropwhile
 from collections import OrderedDict
+import os
 
 import pyrankvote
 from pyrankvote import Candidate, Ballot
 
-RESULTS_PATH = "/app/src/results"
+RESULTS_PATH = str(os.getcwd()) + "/src/results/"
 
 def fix_non_break_space(df):
     raw_df_trial = pd.DataFrame()
@@ -347,6 +348,8 @@ def combine_two_lists_to_dict(lst1, lst2):
 
 def calculate_execs(position_lst_all, raw_df):
     folder = RESULTS_PATH
+    print("folder")
+    print(folder)
     senate_str = 'Senate'
     position_lst = position_lst_all
     position_lst.remove(senate_str)
@@ -363,6 +366,8 @@ def calculate_execs(position_lst_all, raw_df):
 
 def calculate_senate(raw_df):
     folder = RESULTS_PATH
+    print("folder")
+    print(folder)
     position = 'Senate'
     filename = 'Senate.txt'
     rslt_df = get_positional_data(position, raw_df)

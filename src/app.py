@@ -38,7 +38,7 @@ from backend.tabulations_calc import calculate_all
 title = html.P("ASUC Election 2023", style=style.TITLE)
 tabs = html.Div([tabs_layout(["Results", "About", "FAQ"])])
 
-RESULTS_PATH = "/src/results"
+RESULTS_PATH = str(os.getcwd()) + "/src/results/"
 
 def layout():
     return html.Div([
@@ -623,6 +623,8 @@ def result_table(val, position_lst_str, proposition_list_str):
     all_result_lst = position_lst + proposition_lst
     all_html_result_lst = []
     for result_name in all_result_lst:
+        print("RESULTS_PATH")
+        print(RESULTS_PATH)
         file_name = RESULTS_PATH + result_name + '.txt'
         if os.path.isfile(file_name):
             data = ''
