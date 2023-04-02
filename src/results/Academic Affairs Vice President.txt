@@ -1,6 +1,0 @@
-Candidate                                           Votes  Status
-------------------------------------------------  -------  --------
-James Weichert | Independent | Current AAVP* | ♥     6543  Elected
-None of the above                                     588  Rejected
-No Response                                             0  Rejected
-Blank Votes                                            75  Rejected
