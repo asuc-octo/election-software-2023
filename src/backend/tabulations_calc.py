@@ -9,7 +9,7 @@ import os
 import pyrankvote
 from pyrankvote import Candidate, Ballot
 
-RESULTS_PATH = str(os.getcwd()) + "/src/results/"
+RESULTS_PATH = str(os.getcwd()) + "/results/"
 
 def fix_non_break_space(df):
     raw_df_trial = pd.DataFrame()
