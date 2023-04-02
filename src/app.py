@@ -418,14 +418,22 @@ def update_output(list_of_contents, list_of_names, list_of_dates, position_lst_s
 
 @app.callback(Output('output-data-upload', 'children'),
               Input('upload-results-data', 'contents'),
-              State('upload-results-data', 'filename'),
-              State('upload-results-data', 'last_modified'),
-              Input('output-position-str', 'value'),
-              Input('output-proposition-str', 'value')
+            #   State('upload-results-data', 'filename'),
+            #   State('upload-results-data', 'last_modified'),
+            #   Input('output-position-str', 'value'),
+            #   Input('output-proposition-str', 'value'),
+              Input('exec-first-group-calc', 'value'),
+              Input('exec-second-group-calc', 'value'),
+              Input('exec-third-group-calc', 'value'),
+              Input('exec-fourth-group-calc', 'value'),
+              Input('exec-fifth-group-calc', 'value'),
+              Input('senate-calc', 'value'),
+              Input('proposition-calc', 'value'),
 )
-def update_output(list_of_contents, list_of_names, list_of_dates, position_lst_str, proposition_list_str):
+def update_output(list_of_contents, first, second, third, fourth, fifth, senate, proposition):
+    all_lst = [int(first), int(second), int(third), int(fourth), int(fifth), int(senate), int(proposition)]
     print("Received the file")
-    if list_of_contents is not None:
+    if (list_of_contents is not None) & (sum(all_lst) == len(all_lst)):
         # position_lst = txt_str_to_list(position_lst_str)
         # proposition_lst = txt_str_to_list(proposition_list_str)
         # parse_contents_senate(list_of_contents, list_of_names, list_of_dates, position_lst, proposition_lst)
