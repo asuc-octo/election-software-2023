@@ -1,8 +1,9 @@
-from dash import Dash, dcc, html, Input, Output
+from dash import Dash, dcc, html, Input, Output, ctx
 import plotly.graph_objects as go
 import plotly.io as pio
 import os
 import dash_bootstrap_components as dbc
+from flask import send_from_directory
 
 app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP], meta_tags=[
         {"name": "viewport", "content": "width=device-width, initial-scale=1"}
@@ -28,10 +29,12 @@ import config.template_css as style
 from backend.tabulations_calc import calculate_senate, calculate_propositions, calculate_execs
 
 title = html.P("ASUC Election 2023", style=style.TITLE)
-tabs = html.Div([tabs_layout(["Results", "About", "FAQ"])])
+tabs = html.Div([tabs_layout(["Results", "About", "Demo"])])
 
 RESULTS_PATH = str(os.getcwd()) + "/results/" #for heroku 
 # RESULTS_PATH = str(os.getcwd()) + "/src/results/" # for local
+DOWNLOAD_PATH = str(os.getcwd()) + "/demo_files/" #for heroku 
+# DOWNLOAD_PATH = str(os.getcwd()) + "/src/demo_files/" # for local
 
 def split_list(a_list):
     half = len(a_list)//2
@@ -61,8 +64,8 @@ def content(tab):
         return layout_results()
     elif tab == "About":
         return layout_about()
-    elif tab == "FAQ":
-        return layout_faq()
+    elif tab == "Demo":
+        return layout_demo()
 
 def layout_results():
     return html.Div(
@@ -175,10 +178,51 @@ def parse_contents_txt(contents, filename, date):
     
 
 def layout_about():
-    return html.Div("About Content")
+    return html.Div(
+        DOUBLE_SPACE + [
+        html.Div("Created for the Associated Students of the University of California annual elections."),
+        html.A("Learn more about the election calculations & rules.", href='https://plot.ly', target="_blank"),] +
+        DOUBLE_SPACE +
+        [
+        html.Div("Github:"),
+        html.A("Tabulations code", href="https://github.com/asuc-octo/election-software-2023", target="_blank"),
+        html.Br(), html.Br(),
+        html.Div("Developed by the ASUC Office of the Chief Technology Officer.")
+    ])
 
 def layout_faq():
     return html.Div("FAQ Content")
+
+def layout_demo():
+    return html.Div(DOUBLE_SPACE + [
+        html.Div("Step 1:"),
+        html.Br(),
+        dbc.Button("Download Election Files", id='btn-download-demo', outline=True, color="secondary", className="me-1"),
+        dcc.Download(id="download-demo"),
+        html.Br(), html.Br(),
+        html.Div("Step 2:"),
+        html.Br(),
+        html.Div("Insert positions.txt file under 'Upload Position Title File' section."),
+        html.Div("Insert propositions.txt file under 'Upload Proposition Name File' section."),
+        html.Br(),
+        html.Div("Step 3:"),
+        html.Br(),
+        html.Div("Once the 'Upload Results File' section appears, insert electionresults.csv file."),
+    ])
+
+@app.callback(
+    Output('download-demo', 'data'),
+    Input('btn-download-demo', 'n_clicks'),
+    prevent_initial_call=True,
+)
+@app.server.route("/download/<path:path>", methods=['GET', 'POST'])
+def displayClick(btn1):
+    msg = "None of the buttons have been clicked yet"
+    results_df = pd.read_csv(DOWNLOAD_PATH + "electionresults.csv")
+
+    if "btn-download-demo" == ctx.triggered_id:
+        # return send_from_directory(directory = DOWNLOAD_PATH + "electionresults.csv",path = str(os.getcwd()) + 'electionresults.csv', filename = "electionresults.csv")
+        return dcc.send_data_frame(results_df.to_csv, "electionresults.csv")
 
 @app.callback(
     Output("upload-results-file", "children"),
