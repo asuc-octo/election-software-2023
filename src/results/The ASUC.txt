@@ -1,5 +1,0 @@
-      Votes    Counts    Status
-0  The ASUC  The ASUC  The ASUC
-1       Yes      6634    Winner
-2   Abstain      1859  Rejected
-3        No       274  Rejected
