@@ -1,0 +1,5 @@
+             Votes           Counts           Status
+0  Proposition 22A  Proposition 22A  Proposition 22A
+1              Yes             7225           Winner
+2               No             2226         Rejected
+3          Abstain             1460         Rejected

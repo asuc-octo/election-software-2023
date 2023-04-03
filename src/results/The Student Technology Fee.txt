@@ -1,0 +1,5 @@
+                        Votes                      Counts                      Status
+0  The Student Technology Fee  The Student Technology Fee  The Student Technology Fee
+1                         Yes                        6239                      Winner
+2                     Abstain                        1298                    Rejected
+3                          No                        1230                    Rejected

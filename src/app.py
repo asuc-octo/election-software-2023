@@ -815,8 +815,8 @@ def get_congratulations():
         html.Div("🎉 Congratulations to all the elected officials and the winning propositions!\n", style = style.TEXT_CENTER),
         html.Div("And biggest wholehearted support to all the candidates who ran.", style = style.TEXT_CENTER),
         html.Br(),
-        html.Div("Tabulations Created by ASUC OCTO Team in collaboration with the ASUC Elections Council", style = style.TEXT_CENTER),
-        html.Div("Kindness and Love for All", style = style.TEXT_CENTER)]), justify="center", align="center")
+        html.Div("Tabulations Created by ASUC OCTO Team in collaboration with the ASUC Elections Council.", style = style.TEXT_CENTER),
+        html.Div("Kindness and Love for All", style = style.TEXT_CENTER)], width={"size": 12, "offset": 6}), justify="center")
     ], style={'width': '70%', 'text-align':'center'})
 
 CONGRATULATIONS = get_congratulations()

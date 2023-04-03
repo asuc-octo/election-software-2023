@@ -1,0 +1,5 @@
+       Votes     Counts     Status
+0  The Daily  The Daily  The Daily
+1        Yes       4536     Winner
+2         No       2349   Rejected
+3    Abstain       1882   Rejected

@@ -280,6 +280,8 @@ def get_propositional_data(proposition, raw_df_csv):
 
 
 def proposition_calculation(proposition_name, raw_df):
+    print("proposition_name")
+    print(proposition_name)
     prop_trial_df = get_propositional_data(proposition_name, raw_df)
     prop_trial_df
 
