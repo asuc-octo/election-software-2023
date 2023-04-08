@@ -31,10 +31,10 @@ from backend.tabulations_calc import calculate_senate, calculate_propositions, c
 title = html.P("ASUC Election 2023", style=style.TITLE)
 tabs = html.Div([tabs_layout(["Results", "About", "Demo"])])
 
-RESULTS_PATH = str(os.getcwd()) + "/results/" #for heroku 
-# RESULTS_PATH = str(os.getcwd()) + "/src/results/" # for local
-DOWNLOAD_PATH = str(os.getcwd()) + "/demo_files/" #for heroku 
-# DOWNLOAD_PATH = str(os.getcwd()) + "/src/demo_files/" # for local
+# RESULTS_PATH = str(os.getcwd()) + "/results/" #for heroku 
+RESULTS_PATH = str(os.getcwd()) + "/src/results/" # for local
+# DOWNLOAD_PATH = str(os.getcwd()) + "/demo_files/" #for heroku 
+DOWNLOAD_PATH = str(os.getcwd()) + "/src/demo_files/" # for local
 
 def split_list(a_list):
     half = len(a_list)//2
@@ -210,6 +210,7 @@ def layout_demo():
         html.Div("Once the 'Upload Results File' section appears, insert electionresults.csv file."),
     ])
 
+
 @app.callback(
     Output('download-demo', 'data'),
     Input('btn-download-demo', 'n_clicks'),
@@ -223,6 +224,35 @@ def displayClick(btn1):
     if "btn-download-demo" == ctx.triggered_id:
         # return send_from_directory(directory = DOWNLOAD_PATH + "electionresults.csv",path = str(os.getcwd()) + 'electionresults.csv', filename = "electionresults.csv")
         return dcc.send_data_frame(results_df.to_csv, "electionresults.csv")
+
+
+# Download All Rounds
+@app.callback(
+    Output("download-rounds", "data"),
+    Input("btn-download-rounds", "n_clicks"),
+    prevent_initial_call=True,
+)
+def func(n_clicks):
+    file_path = DOWNLOAD_PATH + "allrounds.csv"
+    with open(file_path, 'r') as file:
+        data = file.read().replace('\n', '')
+    return dict(content=data, filename="allrounds.txt")
+
+
+
+# @app.callback(
+#     Output('download-rounds', 'data'),
+#     Input('btn-download-rounds', 'n_clicks'),
+#     prevent_initial_call=True,
+# )
+# @app.server.route("/download/<path:path>", methods=['GET', 'POST'])
+# def displayClick(btn1):
+#     msg = "None of the buttons have been clicked yet"
+#     results_df = pd.read_csv(DOWNLOAD_PATH + "allrounds.csv")
+
+#     if "btn-download-rounds" == ctx.triggered_id:
+#         # return send_from_directory(directory = DOWNLOAD_PATH + "electionresults.csv",path = str(os.getcwd()) + 'electionresults.csv', filename = "electionresults.csv")
+#         return dcc.send_data_frame(results_df.to_csv, "allrounds.csv")
 
 @app.callback(
     Output("upload-results-file", "children"),
@@ -256,7 +286,21 @@ def upload_file(null, position_file_content, proposition_file_content):
                     html.Div(id='senate-calc'),
                     html.Div(id='proposition-calc'),
                     html.Div(id='output-data-upload'),
+                    html.Div(id="rounds-insight")
                 ])
+
+@app.callback(
+    Output('rounds-insight', 'children'),
+    Input('upload-results-data', 'contents')
+)
+def get_rounds_insight():
+    return html.Div([
+        html.Div("Download Rounds Insight:"),
+        html.Br(),
+        dbc.Button("Download Rounds Insight", id='btn-download-rounds', outline=True, color="secondary", className="me-1"),
+        dcc.Download(id="download-rounds"),
+        html.Br(), html.Br(),
+    ])
 
 @app.callback(
         Output('loading', 'children'),
@@ -851,6 +895,10 @@ def result_table(val, position_lst_str, proposition_list_str):
         else:
             all_html_result_lst.append(html.Div("Waiting on " + result_name + " Data"))
     return all_html_result_lst + [CONGRATULATIONS]
+
+
+
+
 
 DOUBLE_SPACE = [html.Br(), html.Br()]
 

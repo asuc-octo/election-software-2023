@@ -9,8 +9,8 @@ import os
 import pyrankvote
 from pyrankvote import Candidate, Ballot
 
-RESULTS_PATH = str(os.getcwd()) + "/results/" #for heroku 
-# RESULTS_PATH = str(os.getcwd()) + "/src/results/" # for local
+# RESULTS_PATH = str(os.getcwd()) + "/results/" #for heroku 
+RESULTS_PATH = str(os.getcwd()) + "/src/results/" # for local
 
 def fix_non_break_space(df):
     raw_df_trial = pd.DataFrame()
@@ -53,12 +53,13 @@ def get_positional_data(position, raw_df_csv):
 
 
     position_str = position + SEPARATOR
-    president_cols = [col for col in raw_df if col.startswith(position)]
-    pres_counts = 0
+    president_cols = [col for col in raw_df.columns if col.startswith(position)]
+    # president_cols = [col for col in raw_df if col.startswith(position)]
+    pres_counts = 0 #number of president columns
 
     while len(president_cols) != 0:
         pres_counts += 1
-        pres_one_col = [col for col in raw_df if col.endswith(SEPARATOR + str(pres_counts) + END_SUFFIX)] # raw_df.filter(like = position_str + str(pres_counts) + '.') # 
+        pres_one_col = [col for col in raw_df.columns if col.endswith(SEPARATOR + str(pres_counts) + END_SUFFIX)] # raw_df.filter(like = position_str + str(pres_counts) + '.') # 
 
         president_cols = [x for x in president_cols if x not in pres_one_col]
 
@@ -73,7 +74,7 @@ def get_positional_data(position, raw_df_csv):
         end_name = str(i + 1) + END_SUFFIX
         
         # take account of duplicate columns for the same position & ranking
-        pres_num_col = [col for col in raw_df if (col.startswith(position_str) & col.endswith(end_name))]
+        pres_num_col = [col for col in raw_df.columns if (col.startswith(position_str) & col.endswith(end_name))]
         pres_num_raw = raw_df[pres_num_col]
         
         # compress the rows to avoid repeating cols
@@ -92,6 +93,7 @@ def get_positional_data(position, raw_df_csv):
             rslt_df = pres_final_num_df
         else:
             rslt_df = pd.concat([rslt_df, pres_final_num_df], axis=1).reset_index(drop=True)
+    rslt_df = rslt_df.replace('na',np.nan).transform(lambda x : sorted(x, key=pd.isnull),1)
     return rslt_df.dropna(axis = 0, how = 'all').reset_index(drop=True)
 
 
@@ -144,10 +146,11 @@ def exec_calculations(df):
         rslt = Ballot(ranked_candidates = res)
         ballots.append(rslt)"""
 
-
-        lst = raw_cand_str_df.loc[i, :].values.flatten().tolist()
-
         target_element = Candidate("No Response")
+        lst = raw_cand_str_df.loc[i, :].dropna().values.flatten().tolist()
+        lst = filter(lambda item: item != target_element,lst)
+        # print(lst)
+        
 
         # delete trailing 'No Response' values
         def takewhile_including(iterable, value):
@@ -155,9 +158,8 @@ def exec_calculations(df):
                 yield it
                 if it == value:
                     return
-        with_dup = list(takewhile_including(lst, target_element))[:-1]
-
-        res = list(OrderedDict.fromkeys(with_dup))
+        #with_dup = list(takewhile_including(lst, target_element))[:-1]
+        res = list(OrderedDict.fromkeys(lst))
         # print("res")
         # print(res)
 
@@ -173,6 +175,11 @@ def exec_calculations(df):
 def get_final_rslt(election_result):
     all_rounds = election_result.__dict__["rounds"]
     return all_rounds[len(all_rounds) - 1].__str__()
+
+def get_all_rslt(election_result):
+    all_rounds = election_result.__dict__["rounds"]
+    print(election_result)
+    return all_rounds.__str__()
 
 
 def senate_calculations(raw_df):
@@ -214,9 +221,11 @@ def senate_calculations(raw_df):
 
     raw_cand_str_df = raw_cand_str_df.loc[raw_cand_str_df.nunique(axis=1).ne(1)].reset_index(drop = True)
     for i in range(len(raw_cand_str_df)):
-        lst = raw_cand_str_df.loc[i, :].values.flatten().tolist()
-
         target_element = Candidate("No Response")
+        lst = raw_cand_str_df.loc[i, :].dropna().values.flatten().tolist()
+        lst = filter(lambda item: item != target_element,lst)
+        # print(lst)
+        
 
         # delete trailing 'No Response' values
         def takewhile_including(iterable, value):
@@ -224,9 +233,8 @@ def senate_calculations(raw_df):
                 yield it
                 if it == value:
                     return
-        with_dup = list(takewhile_including(lst, target_element))[:-1]
-
-        res = list(OrderedDict.fromkeys(with_dup))
+        #with_dup = list(takewhile_including(lst, target_element))[:-1]
+        res = list(OrderedDict.fromkeys(lst))
 
         rslt = Ballot(ranked_candidates = res)
         ballots.append(rslt)
@@ -239,6 +247,18 @@ def senate_calculations(raw_df):
     )
     winners = election_result.get_winners()
     return election_result
+
+def get_round_str(ballot_result_rounds):
+    return ballot_result_rounds.__str__()
+
+def get_txt_file(round_str):
+    folder = RESULTS_PATH
+    print("folder")
+    print(folder)
+    filename = 'Round_Results.txt'
+    with open((folder + filename), "w") as f:
+        print(round_str, file=f)
+    f.close()
 
 
 def get_propositional_data(proposition, raw_df_csv):
@@ -405,9 +425,12 @@ def calculate_senate_propositions(position_lst, proposition_lst, raw_df):
     calculate_senate(raw_df)
     calculate_propositions(proposition_lst, raw_df)
 
-
-# calculate_execs(raw_df)
-# calculate_senate(raw_df)
+pos_lst = ['President', 'Executive Vice President', 
+                'External Affairs Vice President', 'Academic Affairs Vice President',
+               'Student Advocate', 'Transfer Representative', 'Senate']
+raw_df = pd.read_csv("/Users/saruul/Desktop/Projects/asuc_ballot/src/demo_files/electionresults.csv")
+# calculate_execs(pos_lst, raw_df)
+calculate_senate(raw_df)
 # proposition_lst = ['Proposition 22A', 'Proposition 22B']
 # rslt = calculate_propositions(proposition_lst, raw_df)
 # print(rslt)
