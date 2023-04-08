@@ -425,12 +425,12 @@ def calculate_senate_propositions(position_lst, proposition_lst, raw_df):
     calculate_senate(raw_df)
     calculate_propositions(proposition_lst, raw_df)
 
-pos_lst = ['President', 'Executive Vice President', 
-                'External Affairs Vice President', 'Academic Affairs Vice President',
-               'Student Advocate', 'Transfer Representative', 'Senate']
-raw_df = pd.read_csv("/Users/saruul/Desktop/Projects/asuc_ballot/src/demo_files/electionresults.csv")
-# calculate_execs(pos_lst, raw_df)
-calculate_senate(raw_df)
+# pos_lst = ['President', 'Executive Vice President', 
+#                 'External Affairs Vice President', 'Academic Affairs Vice President',
+#                'Student Advocate', 'Transfer Representative', 'Senate']
+# raw_df = pd.read_csv("/Users/saruul/Desktop/Projects/asuc_ballot/src/demo_files/electionresults.csv")
+# # calculate_execs(pos_lst, raw_df)
+# calculate_senate(raw_df)
 # proposition_lst = ['Proposition 22A', 'Proposition 22B']
 # rslt = calculate_propositions(proposition_lst, raw_df)
 # print(rslt)
