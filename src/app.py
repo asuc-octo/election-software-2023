@@ -233,7 +233,7 @@ def displayClick(btn1):
     prevent_initial_call=True,
 )
 def func(n_clicks):
-    file_path = DOWNLOAD_PATH + "allrounds.csv"
+    file_path = RESULTS_PATH + "allrounds.txt"
     with open(file_path, 'r') as file:
         data = file.read().replace('\n', '')
     return dict(content=data, filename="allrounds.txt")
@@ -291,11 +291,11 @@ def upload_file(null, position_file_content, proposition_file_content):
 
 @app.callback(
     Output('rounds-insight', 'children'),
-    Input('upload-results-data', 'contents')
+    Input('output-data-upload', 'contents')
 )
-def get_rounds_insight():
+def get_rounds_insight(null):
     return html.Div([
-        html.Div("Download Rounds Insight:"),
+        html.Div("Results coming soon. Download Rounds Insight after results come out:"),
         html.Br(),
         dbc.Button("Download Rounds Insight", id='btn-download-rounds', outline=True, color="secondary", className="me-1"),
         dcc.Download(id="download-rounds"),

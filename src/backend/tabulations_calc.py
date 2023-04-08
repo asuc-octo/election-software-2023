@@ -178,7 +178,6 @@ def get_final_rslt(election_result):
 
 def get_all_rslt(election_result):
     all_rounds = election_result.__dict__["rounds"]
-    print(election_result)
     return all_rounds.__str__()
 
 
@@ -383,7 +382,12 @@ def calculate_execs(position_lst_all, raw_df):
 
     for position, filename in pos_dict.items():
         rslt_df = get_positional_data(position, raw_df)
-        get_final = get_final_rslt(exec_calculations(rslt_df))
+        election_result = exec_calculations(rslt_df)
+        get_final = get_final_rslt(election_result)
+
+        with open((folder + "allrounds.txt"), "a") as a:
+            print(election_result.__str__(), file=a)
+
         with open((folder + filename), "w") as f:
             print(get_final, file=f)
         f.close()
@@ -395,7 +399,12 @@ def calculate_senate(raw_df):
     position = 'Senate'
     filename = 'Senate.txt'
     rslt_df = get_positional_data(position, raw_df)
-    get_final = get_final_rslt(senate_calculations(rslt_df))
+    election_result = senate_calculations(rslt_df)
+    # get_all_rounds = get_all_rslt(election_result)
+    get_final = get_final_rslt(election_result)
+
+    with open((folder + "allrounds.txt"), "a") as a:
+        print(election_result.__str__(), file=a)
     # print(results)
     with open((folder + filename), "w") as f:
         print(get_final, file=f)
