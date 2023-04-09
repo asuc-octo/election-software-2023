@@ -72,6 +72,15 @@ def get_positional_data(position, raw_df_csv):
         rank = str(i + 1)
         col_name = position_str + rank # + SEPARATOR + rank + END_SUFFIX
         end_name = str(i + 1) + END_SUFFIX
+        print("this is raw_df.columns: ")
+        print(raw_df.columns)
+
+
+        print("this is position_str: ")
+        print(position_str)
+
+        print("this is end name: ")
+        print(end_name)
         
         # take account of duplicate columns for the same position & ranking
         pres_num_col = [col for col in raw_df.columns if (col.startswith(position_str) & col.endswith(end_name))]
@@ -79,7 +88,11 @@ def get_positional_data(position, raw_df_csv):
         
         # compress the rows to avoid repeating cols
         print(position)
+        print("this is print(pres_num_raw.columns): ")
         print(pres_num_raw.columns)
+        print("this is pres_num_raw: ")
+        print(pres_num_raw)
+        pres_num_raw.to_csv("pres_num_raw" + str(position) + str(i))
         pres_final_num_df = pd.DataFrame(pres_num_raw.bfill(axis=1).iloc[:, 0])
         # there should only be one column df
         pres_final_num_df.columns = [col_name]
@@ -181,8 +194,8 @@ def get_all_rslt(election_result):
     return all_rounds.__str__()
 
 
-def senate_calculations(raw_df):
-    df = get_positional_data("Senate", raw_df)
+def senate_calculations(position, raw_df):
+    df = get_positional_data(position, raw_df)
     trial_elect_df = df
     df_cols = list(trial_elect_df.columns)
     len_df = len(trial_elect_df) * len(df_cols)
@@ -392,14 +405,16 @@ def calculate_execs(position_lst_all, raw_df):
             print(get_final, file=f)
         f.close()
 
-def calculate_senate(raw_df):
+def calculate_senate(position_lst, raw_df):
     folder = RESULTS_PATH
     print("folder")
     print(folder)
-    position = 'Senate'
-    filename = 'Senate.txt'
+
+    senate_str = 'Senate'
+    position = [i for i in position_lst if i.startswith(senate_str)][0]
+    filename = str(position) + '.txt'
     rslt_df = get_positional_data(position, raw_df)
-    election_result = senate_calculations(rslt_df)
+    election_result = senate_calculations(position, rslt_df)
     # get_all_rounds = get_all_rslt(election_result)
     get_final = get_final_rslt(election_result)
 
@@ -431,7 +446,7 @@ def calculate_senate_propositions(position_lst, proposition_lst, raw_df):
         raw_df: df directly from ballot results
     """
     # calculate_execs(position_lst, raw_df)
-    calculate_senate(raw_df)
+    calculate_senate(position_lst, raw_df)
     calculate_propositions(proposition_lst, raw_df)
 
 # pos_lst = ['President', 'Executive Vice President', 

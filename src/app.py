@@ -354,7 +354,7 @@ def parse_contents_senate(contents, filename, date, position_lst, proposition_ls
     Input: contents, filename, date, position_lst, proposition_lst
     """
     df = parse_contents(contents, filename)
-    calculate_senate(df)
+    calculate_senate(position_lst, df)
     return
 
 def parse_contents_proposition(contents, filename, date, position_lst, proposition_lst):
