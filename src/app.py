@@ -233,11 +233,26 @@ def displayClick(btn1):
     prevent_initial_call=True,
 )
 def func(n_clicks):
-    file_path = RESULTS_PATH + "allrounds.txt"
-    with open(file_path, 'r') as file:
-        data = file.read().replace('\n', '')
-    return dict(content=data, filename="allrounds.txt")
+    # file_path = RESULTS_PATH + "allrounds.txt"
+    # with open(file_path, 'r') as file:
+    #     data = file.read().replace('\n', '')
+    
+    file_name = RESULTS_PATH + "allrounds.txt"
+    if os.path.isfile(file_name):
+        data = ''
+        with open(file_name, 'r') as file:
+            data = file.read()
 
+        StringData = io.StringIO("""{}""".format(data))
+        
+        dataframe = pd.read_csv(StringData, sep ="\r\n")
+        first_col = dataframe.columns[0]
+        dataframe["Candidate"] = dataframe[first_col].str.split('\s+').str[:-2].apply(lambda parts: " ".join(parts))
+        dataframe["Votes"] = dataframe[first_col].str.split('\s+').str[-2]
+        dataframe["Status"] = dataframe[first_col].str.split('\s+').str[-1]
+        dataframe = dataframe.loc[:, dataframe.columns != first_col]
+
+    return dcc.send_data_frame(dataframe.to_csv, "allrounds_elections.csv")
 
 
 # @app.callback(
@@ -295,6 +310,7 @@ def upload_file(null, position_file_content, proposition_file_content):
 )
 def get_rounds_insight(null):
     return html.Div([
+        html.Br(), html.Br(),
         html.Div("Results coming soon. Download Rounds Insight after results come out:"),
         html.Br(),
         dbc.Button("Download Rounds Insight", id='btn-download-rounds', outline=True, color="secondary", className="me-1"),
@@ -917,4 +933,4 @@ app.layout = layout()
 server = app.server
 
 if __name__ == '__main__':
-    app.run_server(host="0.0.0.0", port=8050, debug=True)
+    app.run_server(host="0.0.0.0", port=8050, debug=False)

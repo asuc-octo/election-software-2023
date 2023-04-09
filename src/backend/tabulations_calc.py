@@ -72,27 +72,12 @@ def get_positional_data(position, raw_df_csv):
         rank = str(i + 1)
         col_name = position_str + rank # + SEPARATOR + rank + END_SUFFIX
         end_name = str(i + 1) + END_SUFFIX
-        print("this is raw_df.columns: ")
-        print(raw_df.columns)
-
-
-        print("this is position_str: ")
-        print(position_str)
-
-        print("this is end name: ")
-        print(end_name)
         
         # take account of duplicate columns for the same position & ranking
         pres_num_col = [col for col in raw_df.columns if (col.startswith(position_str) & col.endswith(end_name))]
         pres_num_raw = raw_df[pres_num_col]
         
         # compress the rows to avoid repeating cols
-        print(position)
-        print("this is print(pres_num_raw.columns): ")
-        print(pres_num_raw.columns)
-        print("this is pres_num_raw: ")
-        print(pres_num_raw)
-        pres_num_raw.to_csv("pres_num_raw" + str(position) + str(i))
         pres_final_num_df = pd.DataFrame(pres_num_raw.bfill(axis=1).iloc[:, 0])
         # there should only be one column df
         pres_final_num_df.columns = [col_name]
@@ -398,8 +383,8 @@ def calculate_execs(position_lst_all, raw_df):
         election_result = exec_calculations(rslt_df)
         get_final = get_final_rslt(election_result)
 
-        with open((folder + "allrounds.txt"), "a") as a:
-            print(election_result.__str__(), file=a)
+        # with open((folder + "allrounds.txt"), "a") as a:
+        #     print(election_result.__str__(), file=a)
 
         with open((folder + filename), "w") as f:
             print(get_final, file=f)
