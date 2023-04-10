@@ -383,8 +383,8 @@ def calculate_execs(position_lst_all, raw_df):
         election_result = exec_calculations(rslt_df)
         get_final = get_final_rslt(election_result)
 
-        # with open((folder + "allrounds.txt"), "a") as a:
-        #     print(election_result.__str__(), file=a)
+        with open((folder + "allrounds.txt"), "a") as a:
+            print(election_result.__str__(), file=a)
 
         with open((folder + filename), "w") as f:
             print(get_final, file=f)
