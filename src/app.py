@@ -277,6 +277,7 @@ def func(n_clicks):
 )
 def upload_file(null, position_file_content, proposition_file_content):
     if (position_file_content is not None) & (proposition_file_content is not None):
+        clear_allrounds_file()
         return html.Div([
                     html.Br(), html.Br(),
                     dbc.Row(dbc.Col(html.Div("Upload Results File"))),
@@ -303,6 +304,10 @@ def upload_file(null, position_file_content, proposition_file_content):
                     html.Div(id='output-data-upload'),
                     html.Div(id="rounds-insight")
                 ])
+
+def clear_allrounds_file():
+    file_name = RESULTS_PATH + "allrounds.txt"
+    open(file_name, "w").close()
 
 @app.callback(
     Output('rounds-insight', 'children'),
