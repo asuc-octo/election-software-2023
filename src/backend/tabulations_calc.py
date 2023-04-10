@@ -6,8 +6,8 @@ from itertools import dropwhile
 from collections import OrderedDict
 import os
 
-import pyrankvote
-from pyrankvote import Candidate, Ballot
+import backend.pyrankvote as pyrankvotesrc
+from backend.pyrankvote.models import Candidate, Ballot
 
 RESULTS_PATH = str(os.getcwd()) + "/results/" #for heroku 
 # RESULTS_PATH = str(os.getcwd()) + "/src/results/" # for local
@@ -165,7 +165,7 @@ def exec_calculations(df):
         ballots.append(rslt)
 
     # Return result
-    election_result = pyrankvote.instant_runoff_voting(candidates, ballots)
+    election_result = pyrankvotesrc.instant_runoff_voting(candidates, ballots)
     winners = election_result.get_winners()
 
     return election_result
@@ -239,10 +239,11 @@ def senate_calculations(position, raw_df):
     # # Return result
     # election_result = pyrankvote.instant_runoff_voting(candidates, ballots)
     NUMBER_OF_SEATS = 20
-    election_result = pyrankvote.single_transferable_vote(
+    election_result = pyrankvotesrc.single_transferable_vote(
         candidates, ballots, number_of_seats=20
     )
     winners = election_result.get_winners()
+
     return election_result
 
 def get_round_str(ballot_result_rounds):
