@@ -47,7 +47,7 @@ def get_positional_data(position, raw_df_csv):
     SEPARATOR = ' - '
     pos_lst = ['President', 'Executive Vice President', 
                 'External Affairs Vice President', 'Academic Affairs Vice President',
-               'Student Advocate', 'Transfer Representative', 'Senate']
+               'Student Advocate', 'Transfer Representative','Transfer Student Representative', 'Senate']
     # add suffix for columns about positions only
     raw_df.columns = [col + SEPARATOR + (re.findall(r'\d+', col)[0]) + END_SUFFIX if col.startswith(tuple(pos_lst)) else col for col in raw_df.columns] # raw_df.add_suffix('.0')
 
@@ -396,7 +396,7 @@ def calculate_senate(position_lst, raw_df):
     print(folder)
 
     senate_str = 'Senate'
-    position = [i for i in position_lst if i.startswith(senate_str)][0]
+    position = senate_str
     filename = str(position) + '.txt'
     rslt_df = get_positional_data(position, raw_df)
     election_result = senate_calculations(position, rslt_df)
