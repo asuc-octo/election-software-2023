@@ -6,7 +6,6 @@ from backend.pyrankvote.models import Candidate, Ballot
 
 import random
 import functools
-import math
 from typing import List, NamedTuple
 from tabulate import tabulate
 
@@ -46,7 +45,7 @@ class RoundResult:
 
     def __str__(self) -> str:
         results_with_blank_votes = [
-            (str(candidate), math.floor(number_of_votes), status)
+            (str(candidate), number_of_votes, status)
             for candidate, number_of_votes, status in self.candidate_results
         ]
 
@@ -62,7 +61,7 @@ class RoundResult:
             ]
         )
 
-        float_format = ".0f" if all_integers else ".0f"
+        float_format = ".0f" if all_integers else ".2f"
 
         pretty_print_string = tabulate(
             results_with_blank_votes,
@@ -86,10 +85,10 @@ class CandidateVoteCount:
         return self.status == CandidateStatus.Hopeful
 
     def as_candidate_result(self) -> CandidateResult:
-        return CandidateResult(self.candidate, math.floor(self.number_of_votes), self.status)
+        return CandidateResult(self.candidate, self.number_of_votes, self.status)
 
     def __repr__(self) -> str:
-        return "<CandidateVoteCount(candidate='%s, votes=%.0f')>" % (
+        return "<CandidateVoteCount(candidate='%s, votes=%.2f')>" % (
             self.candidate.name,
             self.number_of_votes,
         )
@@ -193,7 +192,7 @@ class ElectionManager:
     def __repr__(self) -> str:
         candidate_name_and_votes_str = ", ".join(
             [
-                "%s: %.0f" % (candidate_vc.name, candidate_vc.number_of_votes)
+                "%s: %.2f" % (candidate_vc.name, candidate_vc.number_of_votes)
                 for candidate_vc in self.get_candidates_in_race()
             ]
         )
