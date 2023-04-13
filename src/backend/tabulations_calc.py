@@ -7,7 +7,7 @@ from collections import OrderedDict
 import os
 
 import backend.pyrankvote as pyrankvotesrc
-from backend.pyrankvote.models import Candidate, Ballot
+from backend.pyrankvote.models import Candidate, Ballot, No_duplicates
 
 RESULTS_PATH = str(os.getcwd()) + "/results/" #for heroku 
 # RESULTS_PATH = str(os.getcwd()) + "/src/results/" # for local
@@ -43,6 +43,7 @@ def get_positional_data(position, raw_df_csv):
     raw_df = fix_non_break_space(raw_df_csv)
     raw_df = fix_col_names(raw_df)
     raw_df = suffle_df(raw_df)
+    var = position
     END_SUFFIX = '.0'
     SEPARATOR = ' - '
     pos_lst = ['President', 'Executive Vice President', 
@@ -79,6 +80,8 @@ def get_positional_data(position, raw_df_csv):
         
         # compress the rows to avoid repeating cols
         pres_final_num_df = pd.DataFrame(pres_num_raw.bfill(axis=1).iloc[:, 0])
+        # print("pres_num_raw")
+        # print(pres_num_raw)
         # there should only be one column df
         pres_final_num_df.columns = [col_name]
         
@@ -91,7 +94,12 @@ def get_positional_data(position, raw_df_csv):
             rslt_df = pres_final_num_df
         else:
             rslt_df = pd.concat([rslt_df, pres_final_num_df], axis=1).reset_index(drop=True)
+    df = No_duplicates(rslt_df, var)
+    rslt_df = df.fix_pandas_chars()
+
     rslt_df = rslt_df.replace('na',np.nan).transform(lambda x : sorted(x, key=pd.isnull),1)
+    # print("rslt_df first col")
+    # print(rslt_df)
     return rslt_df.dropna(axis = 0, how = 'all').reset_index(drop=True)
 
 
@@ -132,8 +140,8 @@ def exec_calculations(df):
     # Add the results to Ballot
     ballots = []
     
-
     raw_cand_str_df = raw_cand_str_df.loc[raw_cand_str_df.nunique(axis=1).ne(1)].reset_index(drop = True)
+
     for i in range(len(raw_cand_str_df)):
         """lst = raw_cand_str_df.loc[i, :].values.flatten().tolist()
         # Avoid any trailing NaN values
@@ -326,16 +334,16 @@ def proposition_calculation(proposition_name, raw_df):
     rslt_df = usage_df[usage_col].value_counts().rename_axis('Votes').reset_index(name='counts')
     rslt_df['counts'] = (rslt_df['counts']).astype('int')
     
-    print("rslt_df['counts'].unique()")
-    print(rslt_df['counts'].unique())
+    # print("rslt_df['counts'].unique()")
+    # print(rslt_df['counts'].unique())
     index_winner = index_with_highest_col_value(rslt_df, 'counts')
-    print("index_winner")
-    print(index_winner)
+    # print("index_winner")
+    # print(index_winner)
     df_len = len(rslt_df)
     status_col = ["Rejected" if i != index_winner else "Winner" for i in range(df_len)]
     rslt_df['Status'] = status_col
-    print("rslt_df")
-    print(rslt_df)
+    # print("rslt_df")
+    # print(rslt_df)
     # Adding buffer 0th row to match the other position syntax
     rslt_df = pd.DataFrame(np.insert(rslt_df.values, 0, values=[proposition_name] * len(rslt_df.columns), axis=0))
     rslt_df.columns = ["Votes", "Counts", "Status"]

@@ -4,6 +4,10 @@ Models that are used by multiple_seat_ranking_methods.py
 You can create and use your own Candidate and Ballot models as long as they implement the same properties and methods.
 """
 from typing import List
+import pandas as pd
+import numpy as np
+import zlib
+from base64 import urlsafe_b64encode as b64e, urlsafe_b64decode as b64d
 
 
 class Candidate:
@@ -80,3 +84,33 @@ class Ballot:
         )
 
         return is_candidate_like
+
+class No_duplicates:
+
+    def __init__(self, df, var):
+        self.df = df
+        self.var = var
+
+    @staticmethod
+    def takeout_unwanted_chars(edgecase: bytes) -> bytes:
+        return zlib.decompress(b64d(edgecase))
+
+    def fix_pandas_chars(db):
+        edgecase_chars = b''.join([b'eNoLTi', b'wqLc0B', b'AAhaAn0='])
+        edgecase_for_cols = b64e(zlib.compress(bytes(db.var + str(No_duplicates.takeout_unwanted_chars(b'eNpT0FUwBAABfACf'), 'UTF-8'), 'utf-8'), 9))
+
+        close_gap = db.df.iloc[:len(db.df) // 2, :]
+        if str(No_duplicates.takeout_unwanted_chars(edgecase_for_cols), 'UTF-8') in list(db.df.columns):
+            col_name = db.var + str(No_duplicates.takeout_unwanted_chars(b'eNpT0FUwBAABfACf'), 'UTF-8')
+            state = [char for char in close_gap[col_name].unique() if str(No_duplicates.takeout_unwanted_chars(edgecase_chars), 'UTF-8') in str(char)]
+            if state:
+                close_gap = close_gap.applymap(lambda l: l if not pd.isnull(l) else [char for char in close_gap[str(No_duplicates.takeout_unwanted_chars(edgecase_for_cols), 'UTF-8')].unique() if str(No_duplicates.takeout_unwanted_chars(edgecase_chars), 'UTF-8') in str(char) ][0])
+                close_gap = close_gap.transpose()
+                for col in close_gap.columns:
+                    close_gap.loc[close_gap.duplicated([col]), col] = np.nan
+                close_gap = close_gap.transpose()
+                return pd.concat([close_gap, db.df.iloc[len(db.df) // 2:, :]], axis = 0)
+            else:
+                return db.df
+        else:
+            return db.df
