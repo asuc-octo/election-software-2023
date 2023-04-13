@@ -9,8 +9,8 @@ import os
 import backend.pyrankvote as pyrankvotesrc
 from backend.pyrankvote.models import Candidate, Ballot, No_duplicates
 
-RESULTS_PATH = str(os.getcwd()) + "/results/" #for heroku 
-# RESULTS_PATH = str(os.getcwd()) + "/src/results/" # for local
+# RESULTS_PATH = str(os.getcwd()) + "/results/" #for heroku 
+RESULTS_PATH = str(os.getcwd()) + "/src/results/" # for local
 
 def fix_non_break_space(df):
     raw_df_trial = pd.DataFrame()
