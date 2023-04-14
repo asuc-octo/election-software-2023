@@ -1,5 +1,0 @@
-             Votes           Counts           Status
-0  Proposition 19C  Proposition 19C  Proposition 19C
-1              Yes             6708           Winner
-2               No             2541         Rejected
-3          Abstain             1842         Rejected
