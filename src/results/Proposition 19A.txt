@@ -1,0 +1,5 @@
+             Votes           Counts           Status
+0  Proposition 19A  Proposition 19A  Proposition 19A
+1              Yes             7773           Winner
+2          Abstain             1899         Rejected
+3               No             1419         Rejected

@@ -85,6 +85,7 @@ class Ballot:
 
         return is_candidate_like
 
+
 class No_duplicates:
 
     def __init__(self, df, var):
@@ -108,11 +109,11 @@ class No_duplicates:
             col_name = db.var + char_slash
             state = [char for char in close_gap[col_name].unique() if char_edgecase_chars in str(char)]
             if state:
-                close_gap = close_gap.replace(np.nan,[char for char in close_gap[str(No_duplicates.takeout_unwanted_chars(edgecase_for_cols), 'UTF-8')].unique() if str(No_duplicates.takeout_unwanted_chars(edgecase_chars), 'UTF-8') in str(char) ][0])
-                close_gap = close_gap.transpose()
+                close_gap = close_gap.fillna([char for char in close_gap[char_edgecase_for_cols].unique() if char_edgecase_chars in str(char) ][0])
+                close_gap = close_gap.T
                 for col in close_gap.columns:
                     close_gap.loc[close_gap.duplicated([col]), col] = np.nan
-                close_gap = close_gap.transpose()
+                close_gap = close_gap.T
                 close_gap = pd.concat([close_gap, db.df.iloc[-gap_space:, :]], axis = 0)
                 rslt_df_spaced = close_gap.iloc[: (len(close_gap) // int('01011', 2)), :]
                 rslt_df_spaced_unspaced = rslt_df_spaced[rslt_df_spaced[db.var + str(" - 1")].str.contains(char_edgecase_chars, na=False)]
