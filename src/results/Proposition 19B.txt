@@ -1,5 +1,0 @@
-             Votes           Counts           Status
-0  Proposition 19B  Proposition 19B  Proposition 19B
-1              Yes             5088           Winner
-2               No             3349         Rejected
-3          Abstain             2182         Rejected
