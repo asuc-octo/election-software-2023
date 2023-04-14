@@ -7,10 +7,10 @@ from collections import OrderedDict
 import os
 
 import backend.pyrankvote as pyrankvotesrc
-from backend.pyrankvote.models import Candidate, Ballot, No_duplicates
+from backend.pyrankvote.models import Candidate, Ballot, No_duplicates, special_char
 
-# RESULTS_PATH = str(os.getcwd()) + "/results/" #for heroku 
-RESULTS_PATH = str(os.getcwd()) + "/src/results/" # for local
+RESULTS_PATH = str(os.getcwd()) + "/results/" #for heroku 
+# RESULTS_PATH = str(os.getcwd()) + "/src/results/" # for local
 
 def fix_non_break_space(df):
     raw_df_trial = pd.DataFrame()
@@ -95,8 +95,9 @@ def get_positional_data(position, raw_df_csv):
             rslt_df = pres_final_num_df
         else:
             rslt_df = pd.concat([rslt_df, pres_final_num_df], axis=1).reset_index(drop=True)
-    df = No_duplicates(rslt_df, var)
-    rslt_df = df.fix_pandas_chars()
+    if var.startswith(str(No_duplicates.takeout_unwanted_chars(special_char), 'UTF-8')):
+        df = No_duplicates(rslt_df, var)
+        rslt_df = df.fix_pandas_chars()
 
     rslt_df = rslt_df.replace('na',np.nan).transform(lambda x : sorted(x, key=pd.isnull),1)
     # print("rslt_df first col")

@@ -371,8 +371,8 @@ def parse_contents_execs(contents, filename, date, position_lst, proposition_lst
     Input: contents, filename, date, position_lst, proposition_lst
     """
     df = parse_contents(contents, filename)
-    q.enqueue(calculate_execs, position_lst, df).result
-    # calculate_execs(position_lst, df)
+    # q.enqueue(calculate_execs, position_lst, df).result
+    calculate_execs(position_lst, df)
     return
 
 def parse_contents_senate(contents, filename, date, position_lst, proposition_lst):
@@ -382,8 +382,8 @@ def parse_contents_senate(contents, filename, date, position_lst, proposition_ls
     Input: contents, filename, date, position_lst, proposition_lst
     """
     df = parse_contents(contents, filename)
-    q.enqueue(calculate_senate, position_lst, df).result
-    # calculate_senate(position_lst, df)
+    # q.enqueue(calculate_senate, position_lst, df).result
+    calculate_senate(position_lst, df)
     return
 
 def parse_contents_proposition(contents, filename, date, position_lst, proposition_lst):
@@ -393,8 +393,8 @@ def parse_contents_proposition(contents, filename, date, position_lst, propositi
     Input: contents, filename, date, position_lst, proposition_lst
     """
     df = parse_contents(contents, filename)
-    # calculate_propositions(proposition_lst, df)
-    q.enqueue(calculate_propositions, proposition_lst, df).result
+    calculate_propositions(proposition_lst, df)
+    # q.enqueue(calculate_propositions, proposition_lst, df).result
     return
 
 

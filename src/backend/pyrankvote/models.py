@@ -114,3 +114,5 @@ class No_duplicates:
                 rslt_df_spaced_unspaced = rslt_df_spaced[rslt_df_spaced[db.var + str(" - 1")].str.contains(str(No_duplicates.takeout_unwanted_chars(edgecase_chars), 'UTF-8'), na=False)]
                 close_gap = pd.concat([rslt_df_spaced_unspaced, close_gap.iloc[(len(close_gap) // int('01011', 2)):, :]]).reset_index(drop = True)
         return close_gap
+    
+special_char = b'eNoLKEotzkxJzSsBABH6A68='
