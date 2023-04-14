@@ -889,8 +889,6 @@ def result_table(val, position_lst_str, proposition_list_str):
         print("RESULTS_PATH")
         print(RESULTS_PATH)
         file_name = RESULTS_PATH + result_name + '.txt'
-        while not os.path.exists(file_name):
-            time.sleep(1)
         if os.path.isfile(file_name):
             data = ''
             with open(file_name, 'r') as file:
