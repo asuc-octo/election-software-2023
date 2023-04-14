@@ -32,10 +32,10 @@ from backend.tabulations_calc import calculate_senate, calculate_propositions, c
 title = html.P("ASUC Election 2023", style=style.TITLE)
 tabs = html.Div([tabs_layout(["Results", "About", "Demo"])])
 
-# RESULTS_PATH = str(os.getcwd()) + "/results/" #for heroku 
-RESULTS_PATH = str(os.getcwd()) + "/src/results/" # for local
-# DOWNLOAD_PATH = str(os.getcwd()) + "/demo_files/" #for heroku 
-DOWNLOAD_PATH = str(os.getcwd()) + "/src/demo_files/" # for local
+RESULTS_PATH = str(os.getcwd()) + "/results/" #for heroku 
+# RESULTS_PATH = str(os.getcwd()) + "/src/results/" # for local
+DOWNLOAD_PATH = str(os.getcwd()) + "/demo_files/" #for heroku 
+# DOWNLOAD_PATH = str(os.getcwd()) + "/src/demo_files/" # for local
 
 def split_list(a_list):
     half = len(a_list)//2
