@@ -40,6 +40,7 @@ def get_positional_data(position, raw_df_csv):
     # Fix Column names to avoid cols with ranks >= 10 getting deleted in the data cleanup
     ## col structure: 
     ## 'Senate - 10 - 10.0' where 10.0 is the indicator number for rank 10 (not 1 or anything else)
+    print("reading position")
     raw_df = fix_non_break_space(raw_df_csv)
     raw_df = fix_col_names(raw_df)
     raw_df = suffle_df(raw_df)

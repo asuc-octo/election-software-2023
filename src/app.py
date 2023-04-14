@@ -2,6 +2,7 @@ from dash import Dash, dcc, html, Input, Output, ctx
 import plotly.graph_objects as go
 import plotly.io as pio
 import os
+import time
 import dash_bootstrap_components as dbc
 from flask import send_from_directory
 
@@ -36,10 +37,10 @@ from backend.tabulations_calc import calculate_senate, calculate_propositions, c
 title = html.P("ASUC Election 2023", style=style.TITLE)
 tabs = html.Div([tabs_layout(["Results", "About", "Demo"])])
 
-RESULTS_PATH = str(os.getcwd()) + "/results/" #for heroku 
-# RESULTS_PATH = str(os.getcwd()) + "/src/results/" # for local
-DOWNLOAD_PATH = str(os.getcwd()) + "/demo_files/" #for heroku 
-# DOWNLOAD_PATH = str(os.getcwd()) + "/src/demo_files/" # for local
+# RESULTS_PATH = str(os.getcwd()) + "/results/" #for heroku 
+RESULTS_PATH = str(os.getcwd()) + "/src/results/" # for local
+# DOWNLOAD_PATH = str(os.getcwd()) + "/demo_files/" #for heroku 
+DOWNLOAD_PATH = str(os.getcwd()) + "/src/demo_files/" # for local
 
 def split_list(a_list):
     half = len(a_list)//2
@@ -888,6 +889,8 @@ def result_table(val, position_lst_str, proposition_list_str):
         print("RESULTS_PATH")
         print(RESULTS_PATH)
         file_name = RESULTS_PATH + result_name + '.txt'
+        while not os.path.exists(file_name):
+            time.sleep(1)
         if os.path.isfile(file_name):
             data = ''
             with open(file_name, 'r') as file:
