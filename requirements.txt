@@ -7,4 +7,3 @@ plotly==5.13.0
 pyrankvote==2.0.6
 gunicorn
 dash-tools
-rq==1.13.0
