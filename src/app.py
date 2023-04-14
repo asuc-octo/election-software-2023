@@ -26,6 +26,11 @@ import pandas as pd
 from config.template_functions import tabs_layout
 import config.template_css as style
 
+from rq import Queue
+from worker import conn
+
+q = Queue(connection=conn)
+
 from backend.tabulations_calc import calculate_senate, calculate_propositions, calculate_execs
 
 title = html.P("ASUC Election 2023", style=style.TITLE)
@@ -375,7 +380,8 @@ def parse_contents_senate(contents, filename, date, position_lst, proposition_ls
     Input: contents, filename, date, position_lst, proposition_lst
     """
     df = parse_contents(contents, filename)
-    calculate_senate(position_lst, df)
+    q.enqueue(calculate_senate, position_lst, df).result
+    # calculate_senate(position_lst, df)
     return
 
 def parse_contents_proposition(contents, filename, date, position_lst, proposition_lst):
