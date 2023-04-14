@@ -15,7 +15,7 @@ if __name__ == '__main__':
         worker.work()
 
 
-from app import calculate_senate, calculate_propositions, calculate_execs
-from app import q
+# from app import calculate_senate, calculate_propositions, calculate_execs
+# from app import q
 
 # result = q.enqueue(calculate_senate)
