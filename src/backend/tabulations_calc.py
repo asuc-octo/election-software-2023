@@ -7,7 +7,7 @@ from collections import OrderedDict
 import os
 
 import backend.pyrankvote as pyrankvotesrc
-from backend.pyrankvote.models import Candidate, Ballot, No_duplicates, special_char
+from backend.pyrankvote.models import Candidate, Ballot
 
 RESULTS_PATH = str(os.getcwd()) + "/results/" #for heroku 
 # RESULTS_PATH = str(os.getcwd()) + "/src/results/" # for local
@@ -81,8 +81,6 @@ def get_positional_data(position, raw_df_csv):
         
         # compress the rows to avoid repeating cols
         pres_final_num_df = pd.DataFrame(pres_num_raw.bfill(axis=1).iloc[:, 0])
-        # print("pres_num_raw")
-        # print(pres_num_raw)
         # there should only be one column df
         pres_final_num_df.columns = [col_name]
         
@@ -95,13 +93,8 @@ def get_positional_data(position, raw_df_csv):
             rslt_df = pres_final_num_df
         else:
             rslt_df = pd.concat([rslt_df, pres_final_num_df], axis=1).reset_index(drop=True)
-    if var.startswith(str(No_duplicates.takeout_unwanted_chars(special_char), 'UTF-8')):
-        df = No_duplicates(rslt_df, var)
-        rslt_df = df.fix_pandas_chars()
 
     rslt_df = rslt_df.replace('na',np.nan).transform(lambda x : sorted(x, key=pd.isnull),1)
-    # print("rslt_df first col")
-    # print(rslt_df)
     return rslt_df.dropna(axis = 0, how = 'all').reset_index(drop=True)
 
 

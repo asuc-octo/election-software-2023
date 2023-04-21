@@ -30,7 +30,7 @@ import config.template_css as style
 from backend.tabulations_calc import calculate_senate, calculate_propositions, calculate_execs
 
 title = html.P("ASUC Election 2023", style=style.TITLE)
-tabs = html.Div([tabs_layout(["Results", "About", "Demo"])])
+tabs = html.Div([tabs_layout(["Results", "About", "Download"])])
 
 RESULTS_PATH = str(os.getcwd()) + "/results/" #for heroku 
 # RESULTS_PATH = str(os.getcwd()) + "/src/results/" # for local
@@ -65,7 +65,7 @@ def content(tab):
         return layout_results()
     elif tab == "About":
         return layout_about()
-    elif tab == "Demo":
+    elif tab == "Download":
         return layout_demo()
 
 def layout_results():
@@ -198,9 +198,11 @@ def layout_demo():
     return html.Div(DOUBLE_SPACE + [
         html.Div("Step 1:"),
         html.Br(),
-        dbc.Button("Download Election Files", id='btn-download-demo', outline=True, color="secondary", className="me-1"),
+        dbc.Button("Download 2023 Election Files", id='btn-download-demo', outline=True, color="secondary", className="me-1"),
+        html.Br(),html.Br(),
+        html.Div("Make sure to unzip the file first rather than directly accessing files from the zip."),
         dcc.Download(id="download-demo"),
-        html.Br(), html.Br(),
+        html.Br(),
         html.Div("Step 2:"),
         html.Br(),
         html.Div("Insert positions.txt file under 'Upload Position Title File' section."),
@@ -209,6 +211,47 @@ def layout_demo():
         html.Div("Step 3:"),
         html.Br(),
         html.Div("Once the 'Upload Results File' section appears, insert electionresults.csv file."),
+        html.Br(),html.Br(),html.Br(),html.Br(),
+        html.Div("Archives:"),
+        html.Br(),
+
+        dbc.Row(
+            [
+                dbc.Col([
+                    dbc.Col(
+                        dbc.Button("Download 2022 Election Files", id='btn-download-demo-2022', outline=True, color="secondary", className="me-1"),
+                    ),
+                    dcc.Download(id="download-demo-2022"),
+                    
+                ]),
+
+                # html.Br(), html.Br(),
+                dbc.Col([
+                    dbc.Col(
+                        dbc.Button("Download 2021 Election Files", id='btn-download-demo-2021', outline=True, color="secondary", className="me-1"),
+                    ),
+                    dcc.Download(id="download-demo-2021"),
+                ]),
+            ]),
+        html.Br(),
+        dbc.Row(
+            [
+                dbc.Col([
+                    dbc.Col(
+                        dbc.Button("Download 2020 Election Files", id='btn-download-demo-2020', outline=True, color="secondary", className="me-1"),
+                    ),
+                    dcc.Download(id="download-demo-2020"),
+                ]),
+
+                dbc.Col([
+                    dbc.Col(
+                        dbc.Button("Download 2019 Election Files", id='btn-download-demo-2019', outline=True, color="secondary", className="me-1"),
+                    ),
+                    dcc.Download(id="download-demo-2019"),
+                ]),
+            ]),
+        
+
     ])
 
 
@@ -220,12 +263,77 @@ def layout_demo():
 @app.server.route("/download/<path:path>", methods=['GET', 'POST'])
 def displayClick(btn1):
     msg = "None of the buttons have been clicked yet"
-    results_df = pd.read_csv(DOWNLOAD_PATH + "electionresults.csv")
+    # results_df = pd.read_csv(DOWNLOAD_PATH + "electionresults.csv")
+    zip_file_name = DOWNLOAD_PATH + "2023_elections.zip"
 
     if "btn-download-demo" == ctx.triggered_id:
         # return send_from_directory(directory = DOWNLOAD_PATH + "electionresults.csv",path = str(os.getcwd()) + 'electionresults.csv', filename = "electionresults.csv")
-        return dcc.send_data_frame(results_df.to_csv, "electionresults.csv")
+        # return dcc.send_data_frame(results_df.to_csv, "electionresults.csv")
+        return dcc.send_file(zip_file_name)
+    
+@app.callback(
+    Output('download-demo-2022', 'data'),
+    Input('btn-download-demo-2022', 'n_clicks'),
+    prevent_initial_call=True,
+)
+@app.server.route("/download/<path:path>", methods=['GET', 'POST'])
+def displayClick_2022(btn2):
+    msg = "None of the buttons have been clicked yet"
+    # results_df = pd.read_csv(DOWNLOAD_PATH + "electionresults.csv")
+    zip_file_name = DOWNLOAD_PATH + "2022_elections.zip"
 
+    if "btn-download-demo-2022" == ctx.triggered_id:
+        # return send_from_directory(directory = DOWNLOAD_PATH + "electionresults.csv",path = str(os.getcwd()) + 'electionresults.csv', filename = "electionresults.csv")
+        # return dcc.send_data_frame(results_df.to_csv, "electionresults.csv")
+        return dcc.send_file(zip_file_name)
+
+@app.callback(
+    Output('download-demo-2021', 'data'),
+    Input('btn-download-demo-2021', 'n_clicks'),
+    prevent_initial_call=True,
+)
+@app.server.route("/download/<path:path>", methods=['GET', 'POST'])
+def displayClick_2021(btn3):
+    msg = "None of the buttons have been clicked yet"
+    # results_df = pd.read_csv(DOWNLOAD_PATH + "electionresults.csv")
+    zip_file_name = DOWNLOAD_PATH + "2021_elections.zip"
+
+    if "btn-download-demo-2021" == ctx.triggered_id:
+        # return send_from_directory(directory = DOWNLOAD_PATH + "electionresults.csv",path = str(os.getcwd()) + 'electionresults.csv', filename = "electionresults.csv")
+        # return dcc.send_data_frame(results_df.to_csv, "electionresults.csv")
+        return dcc.send_file(zip_file_name)
+
+@app.callback(
+    Output('download-demo-2020', 'data'),
+    Input('btn-download-demo-2020', 'n_clicks'),
+    prevent_initial_call=True,
+)
+@app.server.route("/download/<path:path>", methods=['GET', 'POST'])
+def displayClick_2020(btn4):
+    msg = "None of the buttons have been clicked yet"
+    # results_df = pd.read_csv(DOWNLOAD_PATH + "electionresults.csv")
+    zip_file_name = DOWNLOAD_PATH + "2020_elections.zip"
+
+    if "btn-download-demo-2020" == ctx.triggered_id:
+        # return send_from_directory(directory = DOWNLOAD_PATH + "electionresults.csv",path = str(os.getcwd()) + 'electionresults.csv', filename = "electionresults.csv")
+        # return dcc.send_data_frame(results_df.to_csv, "electionresults.csv")
+        return dcc.send_file(zip_file_name)
+    
+@app.callback(
+    Output('download-demo-2019', 'data'),
+    Input('btn-download-demo-2019', 'n_clicks'),
+    prevent_initial_call=True,
+)
+@app.server.route("/download/<path:path>", methods=['GET', 'POST'])
+def displayClick_2019(btn5):
+    msg = "None of the buttons have been clicked yet"
+    # results_df = pd.read_csv(DOWNLOAD_PATH + "electionresults.csv")
+    zip_file_name = DOWNLOAD_PATH + "2019_elections.zip"
+
+    if "btn-download-demo-2019" == ctx.triggered_id:
+        # return send_from_directory(directory = DOWNLOAD_PATH + "electionresults.csv",path = str(os.getcwd()) + 'electionresults.csv', filename = "electionresults.csv")
+        # return dcc.send_data_frame(results_df.to_csv, "electionresults.csv")
+        return dcc.send_file(zip_file_name)
 
 # Download All Rounds
 @app.callback(
@@ -942,4 +1050,4 @@ app.layout = layout()
 server = app.server
 
 if __name__ == '__main__':
-    app.run_server(host="0.0.0.0", port=8050, debug=False)
+    app.run_server(host="0.0.0.0", port=8050, debug=True)
